@@ -7,3 +7,8 @@ node_modules/
 /playwright/.cache/
 /playwright/.auth/
 .features-gen/
+
+# .gitignore
+.env
+.env.*
+!.env.example
