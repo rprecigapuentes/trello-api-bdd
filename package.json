@@ -3,7 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "bddgen": "bddgen",
+    "test": "bddgen && playwright test",
+    "report": "playwright show-report"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://gitlab.com/jala-university1/bootcamps/bc.lt.at.fs.05/playwright-bdd.git"
@@ -20,6 +25,8 @@
     "@playwright/test": "^1.62.1",
     "@types/node": "^26.2.0",
     "dotenv": "^17.4.2",
-    "playwright-bdd": "^9.2.0"
+    "playwright-bdd": "^9.2.0",
+    "typescript": "^7.0.2",
+    "zod": "^4.4.3"
   }
 }

@@ -6,3 +6,4 @@ Feature: Trello cards
         When I create a card in the list
         Then the card should be created successfully
         And the card should have the correct name and description
+        And the response is matching the expected schema

@@ -1,6 +1,6 @@
 import { test as base } from "playwright-bdd";
 import { TrelloApiClient } from "./api/trelloClient";
-import { TrelloBoard, TrelloList, TrelloCard } from "./api/trelloTypes";
+import { TrelloBoard, TrelloList, TrelloCard } from "./api/trelloSchemas";
 
 export interface ScenarioState {
   board?: TrelloBoard;

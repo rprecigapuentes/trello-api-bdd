@@ -1,5 +1,5 @@
 import { APIRequestContext, APIResponse, expect } from "@playwright/test";
-import { TrelloBoard, TrelloList, TrelloCard } from "./trelloTypes";
+import { TrelloBoard, TrelloList, TrelloCard } from "./trelloSchemas";
 
 export class TrelloApiClient {
   private baseUrl = "https://api.trello.com/1";
@@ -76,7 +76,7 @@ export class TrelloApiClient {
   }
 
   async archiveList(listId: string): Promise<TrelloList> {
-    return this.updateList(listId, { closed: true } as any);
+    return this.updateList(listId, { closed: true });
   }
 
   // --- CARDS ---

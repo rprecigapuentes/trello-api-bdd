@@ -52,10 +52,11 @@ npx playwright show-report
 ```text
 features/               # BDD feature files (.feature)
 steps/                  # Step definitions and API clients
-├── api/                # Trello API client & response types
+├── api/                # Trello API client, response types and schemas
 ├── fixtures.ts         # Custom BDD fixtures injecting TrelloApiClient
-└── create-card.steps.ts# Step implementations
-tests/                  # Generated Playwright tests (.ptest.ts)
+└── *.steps.ts          # Step implementations
+tests/                  # Generated Playwright tests (.ptest.ts, git-ignored)
 .env                    # Environment credentials (git-ignored)
+tsconfig.json           # TypeScript configuration
 playwright.config.ts    # Playwright and BDD configuration
 ```
