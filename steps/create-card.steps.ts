@@ -1,7 +1,7 @@
 import { createBdd } from "playwright-bdd";
 import { test } from "./fixtures";
 import { expect } from "@playwright/test";
-import { TrelloBoard, TrelloList, TrelloCard } from "./api/trelloTypes";
+import { TrelloBoard, TrelloList, TrelloCard } from "./api/trelloSchemas";
 
 const { Given, When, Then } = createBdd(test);
 
@@ -22,8 +22,9 @@ Given("I have created a list in the board", async ({ trelloApi }) => {
   expect(list.id).toBeTruthy();
 });
 
-When("I create a card in the list", async ({ trelloApi }) => {
+When("I create a card in the list", async ({ trelloApi, scenarioState }) => {
   card = await trelloApi.createCard(list.id, testCardName, testCardDesc);
+  scenarioState.card = card;
   expect(card.id).toBeTruthy();
 });
 
