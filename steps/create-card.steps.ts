@@ -12,11 +12,6 @@ let card: TrelloCard;
 const testCardName = "Automated Card";
 const testCardDesc = "Created via Playwright BDD";
 
-Given("I have a valid Trello authentication token", async () => {
-  expect(process.env.TRELLO_API_KEY).toBeTruthy();
-  expect(process.env.TRELLO_API_TOKEN).toBeTruthy();
-});
-
 Given("I have created a new board", async ({ trelloApi }) => {
   board = await trelloApi.createBoard("BDD Test Board");
   expect(board.id).toBeTruthy();

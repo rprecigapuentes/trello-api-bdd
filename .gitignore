@@ -8,6 +8,9 @@ node_modules/
 /playwright/.auth/
 .features-gen/
 
+# Generated BDD tests (output of `npx bddgen`)
+/tests/
+
 # .gitignore
 .env
 .env.*

@@ -15,6 +15,11 @@ type MyFixtures = {
 
 export const test = base.extend<MyFixtures>({
   trelloApi: async ({ request }, use) => {
+    if (!process.env.TRELLO_API_KEY || !process.env.TRELLO_API_TOKEN) {
+      throw new Error(
+        "Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.",
+      );
+    }
     const client = new TrelloApiClient(request);
     await use(client);
   },
