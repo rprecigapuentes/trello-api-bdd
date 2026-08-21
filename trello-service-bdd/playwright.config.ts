@@ -6,18 +6,18 @@ import { defineBddConfig } from "playwright-bdd";
  * https://github.com/motdotla/dotenv
  */
 import dotenv from "dotenv";
-dotenv.config();
+//dotenv.config();
 
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+import path from 'path';
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 
 const testDir = defineBddConfig({
-  paths: ["features/**/*.feature"],
-  steps: ["steps/**/*.ts"],
+  paths: ["features/*.feature"],
+  steps: ["steps/*.ts"],
   outputDir: "tests",
 });
 
