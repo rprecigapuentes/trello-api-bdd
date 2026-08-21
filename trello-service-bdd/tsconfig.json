@@ -1,4 +1,3 @@
-
 {
   "compilerOptions": {
     "target": "ES2022",
@@ -11,8 +10,12 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@core": ["../core/index.ts"],
+      "@core/*": ["../core/*"]
+    }
   },
-  "include": ["steps/**/*.ts", "playwright.config.ts"],
+  "include": ["steps/**/*.ts", "playwright.config.ts", "../core/**/*.ts"],
   "exclude": ["node_modules", "tests"]
 }
