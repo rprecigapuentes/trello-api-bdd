@@ -1,15 +1,15 @@
 
 # Playwright
 node_modules/
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-/playwright/.auth/
-.features-gen/
+trello-service-bdd/test-results/
+trello-service-bdd/playwright-report/
+trello-service-bdd/blob-report/
+trello-service-bdd/playwright/.cache/
+trello-service-bdd/playwright/.auth/
+trello-service-bdd/.features-gen/
 
 # Generated BDD tests (output of `npx bddgen`)
-/tests/
+trello-service-bdd/tests/
 
 # .gitignore
 .env
