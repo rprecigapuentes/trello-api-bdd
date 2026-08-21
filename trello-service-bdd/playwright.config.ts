@@ -1,24 +1,24 @@
-import { defineConfig, devices } from "@playwright/test";
-import { defineBddConfig } from "playwright-bdd";
+import { defineConfig } from '@playwright/test';
+import { defineBddConfig } from 'playwright-bdd';
 
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 //dotenv.config();
 
 import path from 'path';
-dotenv.config({ path: path.resolve(__dirname, '.env') });
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 
 const testDir = defineBddConfig({
-  paths: ["features/*.feature"],
-  steps: ["steps/*.ts"],
-  outputDir: "tests",
+  paths: ['features/*.feature'],
+  steps: ['steps/*.ts'],
+  outputDir: 'tests',
 });
 
 export default defineConfig({
@@ -32,11 +32,11 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: "html",
+  reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    // baseURL: "https://api.trello.com/1",
+    //baseURL: 'https://api.trello.com/1',
 
     /* Authenticate every API request against the Trello API. */
     extraHTTPHeaders: {
@@ -44,13 +44,12 @@ export default defineConfig({
     },
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: "on-first-retry",
+    trace: 'on-first-retry',
   },
 
   /* Configure projects for major browsers */
   projects: [
-
-    { name: "api" }
+    { name: 'api' },
     // {
     //   name: "chromium",
     //   use: { ...devices["Desktop Chrome"] },
