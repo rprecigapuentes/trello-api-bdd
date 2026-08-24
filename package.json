@@ -8,11 +8,15 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "format:check": "prettier --check ."
   },
   "lint-staged": {
     "*.ts": [
       "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{yml,yaml,json,md}": [
       "prettier --write"
     ]
   },
@@ -45,6 +49,8 @@
     "eslint": "^10.9.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.6",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.3.0",
     "prettier": "^3.9.6"
   }
 }

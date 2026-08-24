@@ -1,0 +1,66 @@
+default:
+  tags: [vps-docker]
+  interruptible: true
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH
+
+stages:
+  - lint
+  - api
+
+variables:
+  npm_config_cache: '$CI_PROJECT_DIR/.npm'
+
+.node_base: &node_base
+  image: node:22-bookworm
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - .npm/
+    policy: pull-push
+  before_script:
+    - npm ci --prefer-offline
+
+lint:
+  stage: lint
+  <<: *node_base
+  script:
+    - npm run lint
+
+typecheck:
+  stage: lint
+  <<: *node_base
+  script:
+    - npm run typecheck -w trello-service-bdd
+
+format:
+  stage: lint
+  <<: *node_base
+  script:
+    - npm run format:check
+
+api:trello:
+  stage: api
+  <<: *node_base
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - .npm/
+    policy: pull
+  script:
+    - npm run test -w trello-service-bdd
+  artifacts:
+    when: always
+    expire_in: 1 week
+    paths:
+      - trello-service-bdd/playwright-report/
+      - trello-service-bdd/logs/
