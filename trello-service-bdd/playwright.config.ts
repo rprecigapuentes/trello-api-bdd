@@ -17,7 +17,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const testDir = defineBddConfig({
   paths: ['features/*.feature'],
-  steps: ['steps/*.ts'],
+  steps: ['steps/*.ts', 'fixtures/*.ts'],
   outputDir: 'tests',
 });
 
@@ -36,7 +36,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    //baseURL: 'https://api.trello.com/1',
+    baseURL: 'https://api.trello.com',
 
     /* Authenticate every API request against the Trello API. */
     extraHTTPHeaders: {

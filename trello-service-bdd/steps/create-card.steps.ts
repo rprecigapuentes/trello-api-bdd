@@ -1,33 +1,40 @@
 import { createBdd } from 'playwright-bdd';
-import { test } from './fixtures';
+import { test } from '../fixtures/fixtures';
 import { expect } from '@playwright/test';
-import { TrelloBoard, TrelloList, TrelloCard } from './api/trelloSchemas';
+import {
+  TrelloBoardSchema,
+  TrelloListSchema,
+  TrelloCardSchema,
+} from '../api/schemas/trelloSchemas';
 import { logger } from '@core';
 
 const { Given, When, Then } = createBdd(test);
 
-let board: TrelloBoard;
-let list: TrelloList;
-let card: TrelloCard;
+let board: TrelloBoardSchema;
+let list: TrelloListSchema;
+let card: TrelloCardSchema;
 
 const testCardName = 'Automated Card';
 const testCardDesc = 'Created via Playwright BDD';
 
-Given('I have created a new board', async ({ trelloApi }) => {
+Given('I have created a new board', async ({ boardClient, scenarioState }) => {
   logger.info('Creating prerequisite board for card scenario...');
-  board = await trelloApi.createBoard('BDD Test Board');
+  const response = await boardClient.createBoard('BDD Test Board');
+  board = await response.json();
   expect(board.id).toBeTruthy();
 });
 
-Given('I have created a list in the board', async ({ trelloApi }) => {
+Given('I have created a list in the board', async ({ listClient }) => {
   logger.info(`Creating prerequisite list 'To Do' on board ID: '${board.id}'...`);
-  list = await trelloApi.createList(board.id, 'To Do');
+  const response = await listClient.createList(board.id, 'To Do');
+  list = await response.json();
   expect(list.id).toBeTruthy();
 });
 
-When('I create a card in the list', async ({ trelloApi, scenarioState }) => {
+When('I create a card in the list', async ({ cardClient, scenarioState }) => {
   logger.info(`Creating card '${testCardName}' in list ID: '${list.id}'...`);
-  card = await trelloApi.createCard(list.id, testCardName, testCardDesc);
+  const response = await cardClient.createCard(list.id, testCardName, testCardDesc);
+  card = await response.json();
   scenarioState.card = card;
   expect(card.id).toBeTruthy();
 });
@@ -38,7 +45,7 @@ Then('the card should be created successfully', async () => {
   expect(card.id).toBeDefined();
 });
 
-Then('the card should have the correct name and description', async ({ trelloApi }) => {
+Then('the card should have the correct name and description', async ({ boardClient }) => {
   logger.info(
     `Validating card properties. Expected name: '${testCardName}', Actual: '${card.name}'`,
   );
@@ -47,6 +54,6 @@ Then('the card should have the correct name and description', async ({ trelloApi
 
   if (board?.id) {
     logger.info(`Tearing down test: Deleting board ID '${board.id}'`);
-    await trelloApi.deleteBoard(board.id);
+    await boardClient.deleteBoard(board.id);
   }
 });

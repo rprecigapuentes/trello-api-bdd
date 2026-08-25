@@ -1,7 +1,7 @@
 import { createBdd } from 'playwright-bdd';
 import { expect } from '@playwright/test';
-import { test } from './fixtures';
-import { trelloCardSchema } from './api/trelloSchemas';
+import { test } from '../fixtures/fixtures';
+import { trelloCardSchema } from '../api/schemas/trelloSchemas';
 
 const { Then } = createBdd(test);
 

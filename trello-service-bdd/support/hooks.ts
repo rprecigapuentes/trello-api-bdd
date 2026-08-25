@@ -1,5 +1,5 @@
 import { createBdd } from 'playwright-bdd';
-import { test } from './fixtures';
+import { test } from '../fixtures/fixtures';
 import { logger, setupLogger } from '@core';
 
 const { Before, After, BeforeAll } = createBdd(test);
