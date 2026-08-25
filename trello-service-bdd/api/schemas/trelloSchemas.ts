@@ -24,6 +24,6 @@ export const trelloCardSchema = z.object({
   url: z.string(),
 });
 
-export type TrelloBoard = z.infer<typeof trelloBoardSchema>;
-export type TrelloList = z.infer<typeof trelloListSchema>;
-export type TrelloCard = z.infer<typeof trelloCardSchema>;
+export type TrelloBoardSchema = z.infer<typeof trelloBoardSchema>;
+export type TrelloListSchema = z.infer<typeof trelloListSchema>;
+export type TrelloCardSchema = z.infer<typeof trelloCardSchema>;

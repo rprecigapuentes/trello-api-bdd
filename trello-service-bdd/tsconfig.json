@@ -16,6 +16,13 @@
       "@core/*": ["../core/*"]
     }
   },
-  "include": ["steps/**/*.ts", "playwright.config.ts", "../core/**/*.ts"],
+  "include": [
+    "steps/**/*.ts",
+    "playwright.config.ts",
+    "../core/**/*.ts",
+    "fixtures/fixtures.ts",
+    "api/clients/trelloClient.ts",
+    "support/hooks.ts"
+  ],
   "exclude": ["node_modules", "tests"]
 }
