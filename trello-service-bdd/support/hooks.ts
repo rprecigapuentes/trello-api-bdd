@@ -1,8 +1,6 @@
 import { createBdd } from 'playwright-bdd';
 import { test } from '../fixtures/fixtures';
 import { logger, setupLogger } from '@core';
-// import { afterEach } from 'node:test';
-import { BoardClient } from '../api/clients/BoardClient';
 
 const { Before, After, BeforeAll } = createBdd(test);
 
