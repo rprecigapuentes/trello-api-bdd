@@ -64,3 +64,12 @@ Given(
     scenarioState.board = board;
   },
 );
+
+Given('the member has no boards', async ({ boardClient, memberClient }) => {
+  const response = await memberClient.getMyMember();
+  const member = await response.json();
+  for (const boardId of member.idBoards) {
+    await boardClient.deleteBoard(boardId);
+  }
+  logger.info(`List of boards for member ID ${member.id}: ${member.idBoards.join(', ')}`);
+});

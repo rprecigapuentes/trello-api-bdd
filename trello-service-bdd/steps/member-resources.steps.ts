@@ -33,3 +33,8 @@ Then(
     );
   },
 );
+
+Then('the response contains an empty array of boards schema', async ({ scenarioState }) => {
+  const boardsArray = await scenarioState.response!.json();
+  expect(boardsArray.length).toBe(0);
+});
