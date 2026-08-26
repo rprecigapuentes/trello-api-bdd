@@ -1,7 +1,7 @@
 import { createBdd } from 'playwright-bdd';
 import { test } from '../fixtures/fixtures';
 import { expect } from '@playwright/test';
-import { logger } from '@core';
+import { logger, testDataName } from '@core';
 
 const { Given, When, Then } = createBdd(test);
 
@@ -53,3 +53,14 @@ Then('I clean up by deleting the board', async ({ boardClient, scenarioState }) 
     scenarioState.board = undefined;
   }
 });
+
+Given(
+  'the member has at least one board named {string}',
+  async ({ scenarioState, boardClient }, boardName: string) => {
+    boardName = testDataName(boardName, 'Board');
+    const response = await boardClient.createBoard(boardName);
+    const board = await response.json();
+    expect(board.id).toBeTruthy();
+    scenarioState.board = board;
+  },
+);
