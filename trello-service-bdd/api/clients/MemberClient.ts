@@ -16,4 +16,9 @@ export class MemberClient {
     const response: APIResponse = await this.request.get(`/1/members/${memberId}`);
     return response;
   }
+
+  async getMemberField(memberId: string, field: string): Promise<APIResponse> {
+    const response: APIResponse = await this.request.get(`/1/members/${memberId}/${field}`);
+    return response;
+  }
 }

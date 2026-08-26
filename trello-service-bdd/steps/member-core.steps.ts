@@ -15,7 +15,6 @@ Given('a member with a valid ID exists', async ({ memberClient, scenarioState })
   expect(myMember.id).toBeTruthy();
 
   scenarioState.member = myMember;
-  console.log('This is the ID: ' + scenarioState.member?.id);
 });
 
 When(
@@ -28,10 +27,6 @@ When(
     scenarioState.member = member;
   },
 );
-
-Then('the response status code is 200', async ({ scenarioState }) => {
-  expect(scenarioState.response!.status()).toBe(200);
-});
 
 Then('the response contains a valid member schema', async ({ scenarioState }) => {
   const validationResult = trelloMemberSchema.safeParse(scenarioState.member);
@@ -48,3 +43,25 @@ Then('the response contains the requested member data', async ({ scenarioState, 
   const expectedMember = await response.json();
   expect(expectedMember).toMatchObject(scenarioState.member!); //this ensures to all the properties of the member object are equal to the expected values
 });
+
+Given('{string} is a valid field of the member model', async ({}, field: string) => {
+  const memberFields = Object.keys(trelloMemberSchema.shape);
+  expect(memberFields).toContain(field);
+});
+
+When(
+  String.raw`the user sends a GET request to \/members\/\{memberId\}\/{word}`,
+  async ({ memberClient, scenarioState }, field: string) => {
+    const response = await memberClient.getMemberField(scenarioState.member!.id, field);
+    scenarioState.response = response;
+  },
+);
+
+Then(
+  'the response contains the correct {string} value under {string} property',
+  async ({ scenarioState }, field: string, property: string) => {
+    const responseJson = await scenarioState.response!.json();
+    const key = field as keyof NonNullable<typeof scenarioState.member>;
+    expect(responseJson[property]).toEqual(scenarioState.member![key]);
+  },
+);
