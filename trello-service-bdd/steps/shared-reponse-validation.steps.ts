@@ -1,11 +1,17 @@
 import { createBdd } from 'playwright-bdd';
 import { test } from '../fixtures/fixtures';
 import { expect } from '@playwright/test';
+import { logger } from '../../core/utils/logger';
 
 const { Given, When, Then } = createBdd(test);
 
 // the {string} will be replaced with the actual status code in the feature file e.g. the response status code is "200" or "404"
 Then('the response status code is {string}', async ({ scenarioState }, statusCode: string) => {
+  logger.info(
+    `Validating response status code. Expected: ${statusCode}, ` +
+      `Actual: ${scenarioState.response!.status()}, ` +
+      `Endpoint: ${scenarioState.response!.url()}`,
+  );
   expect(scenarioState.response!.status()).toBe(Number(statusCode));
 });
 

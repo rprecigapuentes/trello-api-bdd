@@ -49,6 +49,11 @@ Given('{string} is a valid field of the member model', async ({}, field: string)
   expect(memberFields).toContain(field);
 });
 
+Given('{string} is an invalid field of the member model', async ({}, nonExistentField: string) => {
+  const memberFields = Object.keys(trelloMemberSchema.shape);
+  expect(memberFields).not.toContain(nonExistentField);
+});
+
 When(
   String.raw`the user sends a GET request to \/members\/\{memberId\}\/{word}`,
   async ({ memberClient, scenarioState }, field: string) => {
@@ -63,5 +68,15 @@ Then(
     const responseJson = await scenarioState.response!.json();
     const key = field as keyof NonNullable<typeof scenarioState.member>;
     expect(responseJson[property]).toEqual(scenarioState.member![key]);
+  },
+);
+
+Then(
+  'the response contains an error message indicating the {string} field does not exist',
+  async ({ scenarioState }, nonExistentField: string) => {
+    const responseJson = await scenarioState.response!.text();
+    expect(responseJson).toMatch(
+      `Cannot GET /1/members/${scenarioState.member!.id}/${nonExistentField}`,
+    );
   },
 );
