@@ -24,4 +24,11 @@ Feature: Trello Search
         Then the response status code is "200"
         And the response contains an empty "boards" array
         And the response contains an empty "cards" array
-        #And the response contains an empty "organizations" array
+        And the response contains an empty "organizations" array
+
+    @SCRUM-T39
+    Scenario: Get search results for a valid member query
+        Given a member with a valid ID exists
+        When the user sends a GET request to /search?query with the member's username
+        Then the response status code is "200"
+        And the response contains only the users that match the member's username in the "members" array
