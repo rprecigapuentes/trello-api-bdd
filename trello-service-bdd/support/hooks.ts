@@ -28,6 +28,18 @@ After({ tags: '@cleanup-board' }, async ({ scenarioState, boardClient, $testInfo
   console.log(`Cleanup completed: ${$testInfo.title} with tags: ${$testInfo.tags}`);
 });
 
+After({ tags: '@cleanup-background' }, async ({ scenarioState, backgroundApi, $testInfo }) => {
+  if ($testInfo.status === 'failed') {
+    logger.error(`Scenario failed: ${$testInfo.title}`);
+  }
+  if (scenarioState.background) {
+    await backgroundApi.deleteBackground(scenarioState.background.id);
+    logger.info(
+      `Deleted background with ID: ${scenarioState.background.id} after scenario: ${$testInfo.title}`,
+    );
+  }
+});
+
 After({ tags: '@cleanup-organization' }, async ({ scenarioState, organizationClient }) => {
   for (const orgId of [...scenarioState.createdOrganizationIds].reverse()) {
     const response = await organizationClient.deleteOrganization(orgId);

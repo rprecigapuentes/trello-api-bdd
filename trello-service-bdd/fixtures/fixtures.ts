@@ -1,8 +1,8 @@
-import { APIResponse } from '@playwright/test';
 import { CardClient } from '../api/clients/CardClient';
 import { BoardClient } from '../api/clients/BoardClient';
 import { ListClient } from '../api/clients/ListClient';
 import { MemberClient } from '../api/clients/MemberClient';
+import { BackgroundApiClient } from '../api/clients/BackgroundClient';
 import { SearchClient } from '../api/clients/SearchClient';
 import { OrganizationClient } from '../api/clients/OrganizationClient';
 import {
@@ -12,6 +12,8 @@ import {
   TrelloMemberSchema,
   TrelloBoardStarSchema,
 } from '../api/schemas/trelloSchemas';
+import { TrelloBoardBackground } from '../api/schemas/backgroundSchemas';
+import type { APIResponse } from '@playwright/test';
 import { OrganizationSchema } from '../api/schemas/organizationSchemas';
 import { test as base } from 'playwright-bdd';
 import dotenv from 'dotenv';
@@ -24,16 +26,22 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 export interface ScenarioState {
   board?: TrelloBoardSchema;
+  createdBoards?: string[];
   list?: TrelloListSchema;
+  targetList?: TrelloListSchema;
+  destList?: TrelloListSchema;
+  createdCard?: TrelloCardSchema | Record<string, unknown>;
   card?: TrelloCardSchema;
   member?: TrelloMemberSchema;
+  background?: TrelloBoardBackground;
   response?: APIResponse;
+  lastResponse?: APIResponse;
+  [key: string]: unknown;
   boardStar?: TrelloBoardStarSchema;
   organization?: OrganizationSchema;
   generated: Record<string, string>;
   createdOrganizationIds: string[];
 }
-
 type MyFixtures = {
   authStrategy: IAuthStrategy;
   cardClient: CardClient;
@@ -42,6 +50,7 @@ type MyFixtures = {
   memberClient: MemberClient;
   scenarioState: ScenarioState;
   organizationClient: OrganizationClient;
+  backgroundApi: BackgroundApiClient;
   searchClient: SearchClient;
 };
 
@@ -74,6 +83,14 @@ export const test = base.extend<MyFixtures>({
       throw new Error('Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.');
     }
     const client = new SearchClient(request, authStrategy);
+    await use(client);
+  },
+  backgroundApi: async ({ request, authStrategy }, use) => {
+    logger.info('Initializing Background API Client fixture...');
+    if (!process.env.TRELLO_API_KEY || !process.env.TRELLO_API_TOKEN) {
+      throw new Error('Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.');
+    }
+    const client = new BackgroundApiClient(request, authStrategy, 'trello-service-bdd');
     await use(client);
   },
   organizationClient: async ({ request, authStrategy }, use) => {
