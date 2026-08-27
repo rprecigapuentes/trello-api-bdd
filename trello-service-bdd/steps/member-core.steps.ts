@@ -1,7 +1,7 @@
 import { createBdd } from 'playwright-bdd';
 import { test } from '../fixtures/fixtures';
 import { expect } from '@playwright/test';
-import { trelloBoardSchema, trelloMemberSchema } from '../api/schemas/trelloSchemas';
+import { trelloMemberSchema } from '../api/schemas/trelloSchemas';
 import { logger } from '@core/utils/logger';
 
 const { Given, When, Then, After } = createBdd(test);
@@ -54,6 +54,7 @@ Given('{string} is an invalid field of the member model', async ({}, nonExistent
   expect(memberFields).not.toContain(nonExistentField);
 });
 
+//common step for fetching a specific field of the member model
 When(
   String.raw`the user sends a GET request to \/members\/\{memberId\}\/{word}`,
   async ({ memberClient, scenarioState }, field: string) => {

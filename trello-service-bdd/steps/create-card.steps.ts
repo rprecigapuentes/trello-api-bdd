@@ -6,7 +6,7 @@ import {
   TrelloListSchema,
   TrelloCardSchema,
 } from '../api/schemas/trelloSchemas';
-import { logger } from '@core';
+import { logger, testDataName } from '@core';
 
 const { Given, When, Then } = createBdd(test);
 
@@ -17,7 +17,7 @@ let card: TrelloCardSchema;
 const testCardName = 'Automated Card';
 const testCardDesc = 'Created via Playwright BDD';
 
-Given('I have created a new board', async ({ boardClient, scenarioState }) => {
+Given('I have created a new board', async ({ boardClient }) => {
   logger.info('Creating prerequisite board for card scenario...');
   const response = await boardClient.createBoard('BDD Test Board');
   board = await response.json();
@@ -57,3 +57,42 @@ Then('the card should have the correct name and description', async ({ boardClie
     await boardClient.deleteBoard(board.id);
   }
 });
+
+Given(
+  'the member has at least one card named {string} in a list of a board',
+  async ({ scenarioState, boardClient, listClient, cardClient }, dataName: string) => {
+    const boardName = testDataName(dataName, 'Board');
+    const listName = testDataName(dataName, 'List');
+    const cardName = testDataName(dataName, 'Card');
+    const cardDescription = testDataName(dataName, 'Card Description');
+
+    const boardResponse = await boardClient.createBoard(boardName);
+    const board = await boardResponse.json();
+    expect(board.id).toBeTruthy();
+    scenarioState.board = board;
+
+    const listResponse = await listClient.createList(board.id, listName);
+    const list = await listResponse.json();
+    expect(list.id).toBeTruthy();
+    scenarioState.list = list;
+
+    const cardResponse = await cardClient.createCard(list.id, cardName, cardDescription);
+    const card = await cardResponse.json();
+    expect(card.id).toBeTruthy();
+    scenarioState.card = card;
+  },
+);
+
+Given(
+  'the member is assigned to the card named {string}',
+  async ({ scenarioState, cardClient }, dataName: string) => {
+    const response = await cardClient.addMemberToCard(
+      scenarioState.card!.id,
+      scenarioState.member!.id,
+    );
+    await expect(response).toBeOK();
+
+    const responseJson = await response.json();
+    expect(responseJson).toBeDefined();
+  },
+);

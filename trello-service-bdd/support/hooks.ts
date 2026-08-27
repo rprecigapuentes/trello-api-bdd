@@ -25,4 +25,5 @@ After({ tags: '@cleanup-board' }, async ({ scenarioState, boardClient, $testInfo
       `Deleted board with ID: ${scenarioState.board.id} after scenario: ${$testInfo.title}`,
     );
   }
+  console.log(`Cleanup completed: ${$testInfo.title} with tags: ${$testInfo.tags}`);
 });
