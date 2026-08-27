@@ -21,16 +21,21 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 export interface ScenarioState {
   board?: TrelloBoardSchema;
+  createdBoards?: string[];
   list?: TrelloListSchema;
+  targetList?: TrelloListSchema;
+  destList?: TrelloListSchema;
+  createdCard?: TrelloCardSchema | Record<string, unknown>;
   card?: TrelloCardSchema;
   member?: TrelloMemberSchema;
   response?: APIResponse;
+  lastResponse?: APIResponse;
+  [key: string]: unknown;
   boardStar?: TrelloBoardStarSchema;
   organization?: OrganizationSchema;
   generated: Record<string, string>;
   createdOrganizationIds: string[];
 }
-
 type MyFixtures = {
   cardClient: CardClient;
   boardClient: BoardClient;
