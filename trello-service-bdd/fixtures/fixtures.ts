@@ -14,6 +14,8 @@ import { test as base } from 'playwright-bdd';
 import dotenv from 'dotenv';
 import path from 'path';
 import { logger } from '@core';
+import { AuthStrategyFactory, AuthType } from '../api/auth/auth-strategy.factory';
+import { IAuthStrategy } from '../api/auth/auth-strategy.interface';
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
@@ -27,45 +29,36 @@ export interface ScenarioState {
 }
 
 type MyFixtures = {
+  authStrategy: IAuthStrategy;
   cardClient: CardClient;
   boardClient: BoardClient;
   listClient: ListClient;
-  scenarioState: ScenarioState;
   memberClient: MemberClient;
+  scenarioState: ScenarioState;
 };
 
 export const test = base.extend<MyFixtures>({
-  cardClient: async ({ request }, use) => {
+  authStrategy: async ({}, use) => {
+    const authType = (process.env.AUTH_TYPE as AuthType) || 'oauth1';
+    logger.info(`Using auth strategy: ${authType}`);
+    await use(AuthStrategyFactory.create(authType));
+  },
+
+  cardClient: async ({ request, authStrategy }, use) => {
     logger.info('Initializing Card Client fixture...');
-    if (!process.env.TRELLO_API_KEY || !process.env.TRELLO_API_TOKEN) {
-      throw new Error('Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.');
-    }
-    const client = new CardClient(request);
-    await use(client);
+    await use(new CardClient(request, authStrategy));
   },
-  boardClient: async ({ request }, use) => {
+  boardClient: async ({ request, authStrategy }, use) => {
     logger.info('Initializing Board Client fixture...');
-    if (!process.env.TRELLO_API_KEY || !process.env.TRELLO_API_TOKEN) {
-      throw new Error('Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.');
-    }
-    const client = new BoardClient(request);
-    await use(client);
+    await use(new BoardClient(request, authStrategy));
   },
-  listClient: async ({ request }, use) => {
+  listClient: async ({ request, authStrategy }, use) => {
     logger.info('Initializing List Client fixture...');
-    if (!process.env.TRELLO_API_KEY || !process.env.TRELLO_API_TOKEN) {
-      throw new Error('Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.');
-    }
-    const client = new ListClient(request);
-    await use(client);
+    await use(new ListClient(request, authStrategy));
   },
-  memberClient: async ({ request }, use) => {
+  memberClient: async ({ request, authStrategy }, use) => {
     logger.info('Initializing Member Client fixture...');
-    if (!process.env.TRELLO_API_KEY || !process.env.TRELLO_API_TOKEN) {
-      throw new Error('Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.');
-    }
-    const client = new MemberClient(request);
-    await use(client);
+    await use(new MemberClient(request, authStrategy));
   },
   scenarioState: async ({}, use) => {
     await use({});

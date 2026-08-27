@@ -1,29 +1,21 @@
-import { APIRequestContext, APIResponse } from '@playwright/test';
+import { APIResponse } from '@playwright/test';
 import { TrelloListSchema } from '../schemas/trelloSchemas';
 
-export class ListClient {
-  private readonly request: APIRequestContext;
+import { BaseClient } from './BaseClient';
 
-  constructor(request: APIRequestContext) {
-    this.request = request;
-  }
-
+export class ListClient extends BaseClient {
   async createList(boardId: string, name: string): Promise<APIResponse> {
-    const response = await this.request.post(`/1/lists`, {
-      params: { name, idBoard: boardId },
-    });
+    const response = await this.post(`/1/lists`, { name, idBoard: boardId });
     return response;
   }
 
   async getList(listId: string): Promise<APIResponse> {
-    const response = await this.request.get(`/1/lists/${listId}`);
+    const response = await this.get(`/1/lists/${listId}`);
     return response;
   }
 
   async updateList(listId: string, updates: Partial<TrelloListSchema>): Promise<APIResponse> {
-    const response = await this.request.put(`/1/lists/${listId}`, {
-      params: updates,
-    });
+    const response = await this.put(`/1/lists/${listId}`, updates);
     return response;
   }
 

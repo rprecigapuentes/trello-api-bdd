@@ -39,9 +39,9 @@ export default defineConfig({
     baseURL: 'https://api.trello.com',
 
     /* Authenticate every API request against the Trello API. */
-    extraHTTPHeaders: {
+    /*extraHTTPHeaders: {
       Authorization: `OAuth oauth_consumer_key="${process.env.TRELLO_API_KEY}", oauth_token="${process.env.TRELLO_API_TOKEN}"`,
-    },
+    },*/
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
