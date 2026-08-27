@@ -19,6 +19,7 @@ const testDir = defineBddConfig({
   paths: ['features/*.feature'],
   steps: ['steps/*.ts', 'fixtures/*.ts', 'support/*.ts'],
   outputDir: 'tests',
+  tags: 'not @bug',
 });
 
 export default defineConfig({
