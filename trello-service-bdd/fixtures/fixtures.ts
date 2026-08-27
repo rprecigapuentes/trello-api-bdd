@@ -1,14 +1,16 @@
+import { APIResponse } from '@playwright/test';
 import { CardClient } from '../api/clients/CardClient';
 import { BoardClient } from '../api/clients/BoardClient';
 import { ListClient } from '../api/clients/ListClient';
 import { MemberClient } from '../api/clients/MemberClient';
+import { OrganizationClient } from '../api/clients/OrganizationClient';
 import {
   TrelloBoardSchema,
   TrelloListSchema,
   TrelloCardSchema,
   TrelloMemberSchema,
 } from '../api/schemas/trelloSchemas';
-import type { APIResponse } from '@playwright/test';
+import { OrganizationSchema } from '../api/schemas/organizationSchemas';
 import { test as base } from 'playwright-bdd';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -22,12 +24,16 @@ export interface ScenarioState {
   card?: TrelloCardSchema;
   member?: TrelloMemberSchema;
   response?: APIResponse;
+  organization?: OrganizationSchema;
+  generated: Record<string, string>;
+  createdOrganizationIds: string[];
 }
 
 type MyFixtures = {
   cardClient: CardClient;
   boardClient: BoardClient;
   listClient: ListClient;
+  organizationClient: OrganizationClient;
   scenarioState: ScenarioState;
   memberClient: MemberClient;
 };
@@ -65,7 +71,16 @@ export const test = base.extend<MyFixtures>({
     const client = new MemberClient(request);
     await use(client);
   },
+  organizationClient: async ({ request }, use) => {
+    logger.info('Initializing Organization Client fixture...');
+    if (!process.env.TRELLO_API_KEY || !process.env.TRELLO_API_TOKEN) {
+      throw new Error('Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.');
+    }
+    const client = new OrganizationClient(request);
+    await use(client);
+  },
   scenarioState: async ({}, use) => {
-    await use({});
+    const state: ScenarioState = { generated: {}, createdOrganizationIds: [] };
+    await use(state);
   },
 });
