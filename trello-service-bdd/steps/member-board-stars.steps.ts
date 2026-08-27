@@ -1,7 +1,7 @@
 import { createBdd } from 'playwright-bdd';
 import { test } from '../fixtures/fixtures';
 import { expect } from '@playwright/test';
-import { boardStarSchema, TrelloBoardStarSchema } from '../api/schemas/trelloSchemas';
+import { boardStarSchema } from '../api/schemas/trelloSchemas';
 import { logger } from '@core/utils/logger';
 import { testDataName } from '@core/utils/test-data-name-generator';
 
@@ -41,7 +41,7 @@ Then(
 );
 
 Given(
-  'the member has a board star with the {string} in a board named {string}',
+  'the member has a board star with the {string} position in a board named {string}',
   async ({ scenarioState, boardClient, memberClient }, position: string, dataName: string) => {
     const boardName = testDataName(dataName, 'Board');
 
@@ -93,5 +93,27 @@ When(
       position,
     );
     scenarioState.response = response;
+  },
+);
+
+When(
+  String.raw`the user sends a DELETE request to \/members\/\{memberId\}\/boardStars\/\{boardStarId\}`,
+  async ({ scenarioState, memberClient }) => {
+    const response = await memberClient.deleteBoardStar(
+      scenarioState.member!.id,
+      scenarioState.boardStar!.id,
+    );
+    scenarioState.response = response;
+  },
+);
+
+Then(
+  'the GET board star by id response returns a {string} status code',
+  async ({ scenarioState, memberClient }, statusCode: string) => {
+    const response = await memberClient.getBoardStar(
+      scenarioState.member!.id,
+      scenarioState.boardStar!.id,
+    );
+    expect(response.status()).toBe(Number(statusCode));
   },
 );

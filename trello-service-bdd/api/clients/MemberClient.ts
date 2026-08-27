@@ -50,4 +50,11 @@ export class MemberClient {
     );
     return response;
   }
+
+  async deleteBoardStar(memberId: string, boardStarId: string): Promise<APIResponse> {
+    const response: APIResponse = await this.request.delete(
+      `/1/members/${memberId}/boardStars/${boardStarId}`,
+    );
+    return response;
+  }
 }
