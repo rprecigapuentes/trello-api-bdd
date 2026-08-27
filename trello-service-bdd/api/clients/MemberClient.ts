@@ -1,4 +1,5 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
+import { TrelloBoardStarSchema } from '../schemas/trelloSchemas';
 
 export class MemberClient {
   private readonly request: APIRequestContext;
@@ -32,6 +33,20 @@ export class MemberClient {
   async getBoardStar(memberId: string, boardStarId: string): Promise<APIResponse> {
     const response: APIResponse = await this.request.get(
       `/1/members/${memberId}/boardStars/${boardStarId}`,
+    );
+    return response;
+  }
+
+  async updateBoardStar(
+    memberId: string,
+    boardStarId: string,
+    newPosition: string,
+  ): Promise<APIResponse> {
+    const response: APIResponse = await this.request.put(
+      `/1/members/${memberId}/boardStars/${boardStarId}`,
+      {
+        params: { pos: newPosition },
+      },
     );
     return response;
   }

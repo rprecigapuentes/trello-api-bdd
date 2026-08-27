@@ -1,7 +1,7 @@
 import { createBdd } from 'playwright-bdd';
 import { test } from '../fixtures/fixtures';
 import { expect } from '@playwright/test';
-import { boardStarSchema } from '../api/schemas/trelloSchemas';
+import { boardStarSchema, TrelloBoardStarSchema } from '../api/schemas/trelloSchemas';
 import { logger } from '@core/utils/logger';
 import { testDataName } from '@core/utils/test-data-name-generator';
 
@@ -66,6 +66,31 @@ When(
     const response = await memberClient.getBoardStar(
       scenarioState.member!.id,
       scenarioState.boardStar!.id,
+    );
+    scenarioState.response = response;
+  },
+);
+
+Then(
+  'the GET response contains the {string} board star with the correct values',
+  async ({ scenarioState, memberClient }, position: string) => {
+    const response = await memberClient.getBoardStar(
+      scenarioState.member!.id,
+      scenarioState.boardStar!.id,
+    );
+    const responseJson = await response.json();
+    const expectedBoardStar = boardStarSchema.parse(responseJson);
+    expect(expectedBoardStar).toEqual(scenarioState.boardStar);
+  },
+);
+
+When(
+  String.raw`the user sends a PUT request to \/members\/\{memberId\}\/boardStars\/\{boardStarId\} with the board ID and {string} as pos field value`,
+  async ({ scenarioState, memberClient }, position: string) => {
+    const response = await memberClient.updateBoardStar(
+      scenarioState.member!.id,
+      scenarioState.boardStar!.id,
+      position,
     );
     scenarioState.response = response;
   },

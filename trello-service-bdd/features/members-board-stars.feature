@@ -8,6 +8,7 @@ Feature: Members Board Stars CRUD
         Then the response status code is "200"
         And the response contains a valid board star schema
         And the response contains the correct board ID and "<position>" field value
+        And the GET response contains the "created" board star with the correct values
     
         Examples:
         | position  | 
@@ -24,6 +25,23 @@ Feature: Members Board Stars CRUD
         Then the response status code is "200"
         And the response contains a valid board star schema
         And the response contains the correct board ID and "<position>" field value
+    
+        Examples:
+        | position  |
+        | top       |
+        | bottom    |
+        | 10000     |
+        | 1000.1    |
+
+    @SCRUM-T16 @cleanup-board 
+    Scenario: Update a board star for a member by a valid member ID and board star ID
+        Given a member with a valid ID exists
+        And the member has a board star with the "<position>" in a board named "SCRUM-T16"
+        When the user sends a PUT request to /members/{memberId}/boardStars/{boardStarId} with the board ID and "<position>" as pos field value
+        Then the response status code is "200"
+        And the response contains a valid board star schema
+        And the response contains the correct board ID and "<position>" field value
+        And the GET response contains the "updated" board star with the correct values
     
         Examples:
         | position  |
