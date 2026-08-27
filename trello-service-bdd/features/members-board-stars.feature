@@ -7,10 +7,26 @@ Feature: Members Board Stars CRUD
         When the user sends a POST request to /members/{memberId}/boardStars with the board ID and "<position>" as pos field value
         Then the response status code is "200"
         And the response contains a valid board star schema
-        And the response contains the correct board ID and position field value
+        And the response contains the correct board ID and "<position>" field value
     
         Examples:
         | position  | 
+        | top       |
+        | bottom    |
+        | 10000     |
+        | 1000.1    |
+
+    @SCRUM-T12 @cleanup-board 
+    Scenario: Get a board star for a member by a valid member ID and board star ID
+        Given a member with a valid ID exists
+        And the member has a board star with the "<position>" in a board named "SCRUM-T12"
+        When the user sends a GET request to /members/{memberId}/boardStars/{boardStarId}
+        Then the response status code is "200"
+        And the response contains a valid board star schema
+        And the response contains the correct board ID and "<position>" field value
+    
+        Examples:
+        | position  |
         | top       |
         | bottom    |
         | 10000     |

@@ -3,6 +3,7 @@ import { test } from '../fixtures/fixtures';
 import { expect } from '@playwright/test';
 import { boardStarSchema } from '../api/schemas/trelloSchemas';
 import { logger } from '@core/utils/logger';
+import { testDataName } from '@core/utils/test-data-name-generator';
 
 const { Given, When, Then } = createBdd(test);
 
@@ -29,16 +30,43 @@ Then('the response contains a valid board star schema', async ({ scenarioState }
 });
 
 Then(
-  'the response contains the correct board ID and position field value',
+  'the response contains the correct board ID and {string} field value',
+  async ({ scenarioState }, position: string) => {
+    expect(scenarioState.boardStar!.idBoard).toBe(scenarioState.board!.id);
+    const posValue = Number(position);
+    if (!Number.isNaN(posValue)) {
+      expect(scenarioState.boardStar!.pos).toBe(posValue);
+    }
+  },
+);
+
+Given(
+  'the member has a board star with the {string} in a board named {string}',
+  async ({ scenarioState, boardClient, memberClient }, position: string, dataName: string) => {
+    const boardName = testDataName(dataName, 'Board');
+
+    const response = await boardClient.createBoard(boardName);
+    const board = await response.json();
+    scenarioState.board = board;
+
+    const starResponse = await memberClient.createBoardStar(
+      scenarioState.member!.id,
+      scenarioState.board!.id,
+      position,
+    );
+    const boardStar = await starResponse.json();
+    expect(boardStar).toBeTruthy();
+    scenarioState.boardStar = boardStar;
+  },
+);
+
+When(
+  String.raw`the user sends a GET request to \/members\/\{memberId\}\/boardStars\/\{boardStarId\}`,
   async ({ scenarioState, memberClient }) => {
     const response = await memberClient.getBoardStar(
       scenarioState.member!.id,
       scenarioState.boardStar!.id,
     );
-    await expect(response).toBeOK();
-
-    const expectedBoardStar = await response.json();
-    expect(scenarioState.boardStar!.idBoard).toBe(expectedBoardStar.idBoard);
-    expect(scenarioState.boardStar!.pos).toBe(expectedBoardStar.pos);
+    scenarioState.response = response;
   },
 );

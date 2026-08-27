@@ -56,7 +56,7 @@ Given('{string} is an invalid field of the member model', async ({}, nonExistent
 
 //common step for fetching a specific field of the member model
 When(
-  String.raw`the user sends a GET request to \/members\/\{memberId\}\/{word}`,
+  String.raw`the user sends a GET request to \/members\/\{memberId\}\/{string}`,
   async ({ memberClient, scenarioState }, field: string) => {
     const response = await memberClient.getMemberField(scenarioState.member!.id, field);
     scenarioState.response = response;
