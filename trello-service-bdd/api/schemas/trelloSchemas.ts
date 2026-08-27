@@ -34,7 +34,14 @@ export const trelloMemberSchema = z.object({
   email: z.string(),
 });
 
+export const boardStarSchema = z.object({
+  id: z.string(),
+  idBoard: z.string(),
+  pos: z.union([z.string(), z.number()]),
+});
+
 export type TrelloBoardSchema = z.infer<typeof trelloBoardSchema>;
 export type TrelloListSchema = z.infer<typeof trelloListSchema>;
 export type TrelloCardSchema = z.infer<typeof trelloCardSchema>;
 export type TrelloMemberSchema = z.infer<typeof trelloMemberSchema>;
+export type TrelloBoardStarSchema = z.infer<typeof boardStarSchema>;

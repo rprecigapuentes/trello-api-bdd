@@ -49,7 +49,16 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    { name: 'api' },
+    {
+      name: 'api',
+      grepInvert: /@runLast/,
+    },
+    {
+      name: 'api-last',
+      grepInvert: undefined,
+      grep: /@runLast/,
+      dependencies: ['api'],
+    },
     // {
     //   name: "chromium",
     //   use: { ...devices["Desktop Chrome"] },

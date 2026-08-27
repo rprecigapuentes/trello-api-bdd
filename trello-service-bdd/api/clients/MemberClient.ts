@@ -21,4 +21,39 @@ export class MemberClient {
     const response: APIResponse = await this.request.get(`/1/members/${memberId}/${field}`);
     return response;
   }
+
+  async createBoardStar(memberId: string, boardId: string, position: string): Promise<APIResponse> {
+    const response: APIResponse = await this.request.post(`/1/members/${memberId}/boardStars`, {
+      params: { idBoard: boardId, pos: position },
+    });
+    return response;
+  }
+
+  async getBoardStar(memberId: string, boardStarId: string): Promise<APIResponse> {
+    const response: APIResponse = await this.request.get(
+      `/1/members/${memberId}/boardStars/${boardStarId}`,
+    );
+    return response;
+  }
+
+  async updateBoardStar(
+    memberId: string,
+    boardStarId: string,
+    newPosition: string,
+  ): Promise<APIResponse> {
+    const response: APIResponse = await this.request.put(
+      `/1/members/${memberId}/boardStars/${boardStarId}`,
+      {
+        params: { pos: newPosition },
+      },
+    );
+    return response;
+  }
+
+  async deleteBoardStar(memberId: string, boardStarId: string): Promise<APIResponse> {
+    const response: APIResponse = await this.request.delete(
+      `/1/members/${memberId}/boardStars/${boardStarId}`,
+    );
+    return response;
+  }
 }

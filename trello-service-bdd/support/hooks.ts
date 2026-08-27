@@ -1,7 +1,6 @@
 import { createBdd } from 'playwright-bdd';
 import { test } from '../fixtures/fixtures';
 import { logger, setupLogger } from '@core';
-// import { afterEach } from 'node:test';
 
 const { Before, After, BeforeAll } = createBdd(test);
 
@@ -26,6 +25,7 @@ After({ tags: '@cleanup-board' }, async ({ scenarioState, boardClient, $testInfo
       `Deleted board with ID: ${scenarioState.board.id} after scenario: ${$testInfo.title}`,
     );
   }
+  console.log(`Cleanup completed: ${$testInfo.title} with tags: ${$testInfo.tags}`);
 });
 
 After({ tags: '@cleanup-organization' }, async ({ scenarioState, organizationClient }) => {
