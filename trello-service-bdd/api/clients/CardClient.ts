@@ -43,4 +43,9 @@ export class CardClient {
     const response = await this.request.delete(`/1/cards/${cardId}/idMembers/${memberId}`);
     return response;
   }
+
+  async getCardMembers(cardId: string): Promise<APIResponse> {
+    const response = await this.request.get(`/1/cards/${cardId}/members`);
+    return response;
+  }
 }
