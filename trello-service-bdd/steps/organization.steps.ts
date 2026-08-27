@@ -4,7 +4,7 @@ import { testDataName, testDataSlug } from '@core';
 import { expect } from '@playwright/test';
 import { logger } from '../../core/utils/logger';
 
-const { When, Then } = createBdd(test);
+const { Given, When, Then } = createBdd(test);
 
 const zephyrKey = (tags: string[]): string => {
   const tag = tags.find((t) => /^@SCRUM-T\d+$/.test(t));
@@ -61,5 +61,18 @@ Then(
     expect(expectedField).toBeDefined();
     expect(body).toHaveProperty(field);
     expect(body[field]).toBe(expectedField);
+  },
+);
+
+Given(
+  'the member has at least one organization named {string}',
+  async ({ scenarioState, organizationClient }, dataName: string) => {
+    const displayName = testDataName(dataName, 'Organization');
+    scenarioState.generated.displayName = displayName;
+    const response = await organizationClient.create({ displayName });
+    expect(response.ok()).toBe(true);
+    const organization = await response.json();
+    scenarioState.organization = organization;
+    scenarioState.createdOrganizationIds.push(organization.id);
   },
 );

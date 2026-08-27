@@ -3,26 +3,21 @@ import { test } from '../fixtures/fixtures';
 import { expect } from '@playwright/test';
 import { logger } from '@core';
 
-const { Given, When, Then } = createBdd(test);
-
-Given(
-  'the member has at least one organization named {string}',
-  async ({ scenarioState }, organizationName: string) => {
-    expect(1).toBe(1);
-  },
-);
+const { When, Then } = createBdd(test);
 
 When(
   String.raw`the user sends a GET request to \/search?query={string}`,
   async ({ searchClient, scenarioState }, query: string) => {
     const response = await searchClient.search(query);
     scenarioState.response = response;
+    console.log(`Search query: ${query}, Response status: ${response.status()}`);
+    console.log(`Response body: ${await response.json()}`);
   },
 );
 
 Then(
-  'the response contains only {string} in the {string} array',
-  async ({ scenarioState }, itemName: string, arrayName: string) => {
+  'the response contains only {string} {string} in the {string} array',
+  async ({ scenarioState }, itemName: string, fieldName: string, arrayName: string) => {
     const responseBody = await scenarioState.response?.json();
     expect(responseBody[arrayName]).toBeDefined();
 
@@ -31,8 +26,8 @@ Then(
     expect(items.length).toBeGreaterThan(0);
 
     for (const item of items) {
-      logger.error(`Checking item: ${item.name} against expected: ${itemName}`);
-      expect(item.name).toContain(itemName);
+      logger.error(`Checking item: ${item[fieldName]} against expected: ${itemName}`);
+      expect(item[fieldName]).toContain(itemName);
     }
   },
 );
