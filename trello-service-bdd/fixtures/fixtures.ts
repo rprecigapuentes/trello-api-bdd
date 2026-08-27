@@ -7,6 +7,7 @@ import {
   TrelloListSchema,
   TrelloCardSchema,
   TrelloMemberSchema,
+  TrelloBoardStarSchema,
 } from '../api/schemas/trelloSchemas';
 import type { APIResponse } from '@playwright/test';
 import { test as base } from 'playwright-bdd';
@@ -22,6 +23,7 @@ export interface ScenarioState {
   card?: TrelloCardSchema;
   member?: TrelloMemberSchema;
   response?: APIResponse;
+  boardStar?: TrelloBoardStarSchema;
 }
 
 type MyFixtures = {

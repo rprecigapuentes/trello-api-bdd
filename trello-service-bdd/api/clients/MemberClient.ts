@@ -21,4 +21,18 @@ export class MemberClient {
     const response: APIResponse = await this.request.get(`/1/members/${memberId}/${field}`);
     return response;
   }
+
+  async createBoardStar(memberId: string, boardId: string, pos: string): Promise<APIResponse> {
+    const response: APIResponse = await this.request.post(`/1/members/${memberId}/boardStars`, {
+      params: { idBoard: boardId, pos: pos },
+    });
+    return response;
+  }
+
+  async getBoardStar(memberId: string, boardStarId: string): Promise<APIResponse> {
+    const response: APIResponse = await this.request.get(
+      `/1/members/${memberId}/boardStars/${boardStarId}`,
+    );
+    return response;
+  }
 }
