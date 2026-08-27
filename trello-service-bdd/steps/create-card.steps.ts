@@ -72,6 +72,9 @@ Given(
     scenarioState.board = board;
 
     const listResponse = await listClient.createList(board.id, listName);
+    logger.error(
+      `Created list with ID: ${(await listResponse.json()).id} and name: ${(await listResponse.json()).name}`,
+    );
     const list = await listResponse.json();
     expect(list.id).toBeTruthy();
     scenarioState.list = list;

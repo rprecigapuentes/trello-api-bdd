@@ -3,6 +3,7 @@ import { CardClient } from '../api/clients/CardClient';
 import { BoardClient } from '../api/clients/BoardClient';
 import { ListClient } from '../api/clients/ListClient';
 import { MemberClient } from '../api/clients/MemberClient';
+import { SearchClient } from '../api/clients/SearchClient';
 import { OrganizationClient } from '../api/clients/OrganizationClient';
 import {
   TrelloBoardSchema,
@@ -43,6 +44,7 @@ type MyFixtures = {
   organizationClient: OrganizationClient;
   scenarioState: ScenarioState;
   memberClient: MemberClient;
+  searchClient: SearchClient;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -76,6 +78,14 @@ export const test = base.extend<MyFixtures>({
       throw new Error('Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.');
     }
     const client = new MemberClient(request);
+    await use(client);
+  },
+  searchClient: async ({ request }, use) => {
+    logger.info('Initializing Search Client fixture...');
+    if (!process.env.TRELLO_API_KEY || !process.env.TRELLO_API_TOKEN) {
+      throw new Error('Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.');
+    }
+    const client = new SearchClient(request);
     await use(client);
   },
   organizationClient: async ({ request }, use) => {
