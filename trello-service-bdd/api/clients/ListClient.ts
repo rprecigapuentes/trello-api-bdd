@@ -1,33 +1,62 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
-import { TrelloListSchema } from '../schemas/trelloSchemas';
 
 export class ListClient {
-  private readonly request: APIRequestContext;
-
-  constructor(request: APIRequestContext) {
-    this.request = request;
-  }
+  constructor(private request: APIRequestContext) {}
 
   async createList(boardId: string, name: string): Promise<APIResponse> {
-    const response = await this.request.post(`/1/lists`, {
-      params: { name, idBoard: boardId },
+    return await this.request.post('1/lists', {
+      params: {
+        name,
+        idBoard: boardId,
+      },
     });
-    return response;
   }
 
-  async getList(listId: string): Promise<APIResponse> {
-    const response = await this.request.get(`/1/lists/${listId}`);
-    return response;
+  async updateList(
+    listId: string,
+    data: Record<string, string | number | boolean>,
+  ): Promise<APIResponse> {
+    return await this.request.put(`1/lists/${listId}`, {
+      params: data,
+    });
   }
 
-  async updateList(listId: string, updates: Partial<TrelloListSchema>): Promise<APIResponse> {
-    const response = await this.request.put(`/1/lists/${listId}`, {
-      params: updates,
+  async updateField(listId: string, field: string, value: string): Promise<APIResponse> {
+    return await this.request.put(`1/lists/${listId}/${field}`, {
+      params: { value },
     });
-    return response;
   }
 
   async archiveList(listId: string): Promise<APIResponse> {
-    return this.updateList(listId, { closed: true });
+    return await this.request.put(`1/lists/${listId}/closed`, {
+      params: { value: 'true' },
+    });
+  }
+
+  async unarchiveList(listId: string): Promise<APIResponse> {
+    return await this.updateList(listId, { closed: false });
+  }
+
+  async archiveAllCards(listId: string): Promise<APIResponse> {
+    return await this.request.post(`1/lists/${listId}/archiveAllCards`);
+  }
+
+  async moveAllCards(listId: string, boardId: string, destListId: string): Promise<APIResponse> {
+    return await this.request.post(`1/lists/${listId}/moveAllCards`, {
+      params: {
+        idBoard: boardId,
+        idList: destListId,
+      },
+    });
+  }
+
+  async moveListToBoard(listId: string, boardId: string): Promise<APIResponse> {
+    return await this.request.put(`1/lists/${listId}/idBoard`, {
+      params: { value: boardId },
+    });
+  }
+
+  async getCards(listId: string): Promise<APIResponse> {
+    return await this.request.get(`1/lists/${listId}/cards`);
   }
 }
