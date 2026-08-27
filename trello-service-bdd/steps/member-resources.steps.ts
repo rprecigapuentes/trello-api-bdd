@@ -4,7 +4,11 @@ import { expect } from '@playwright/test';
 import { trelloBoardSchema, trelloCardSchema } from '../api/schemas/trelloSchemas';
 import { logger } from '@core/utils/logger';
 
-const { Given, When, Then, After } = createBdd(test);
+const { Given, Then } = createBdd(test);
+
+type NamedResource = {
+  name: string;
+};
 
 Then('the response contains a valid array of boards', async ({ scenarioState }) => {
   const responseJson = await scenarioState.response!.json();
@@ -62,5 +66,27 @@ Then(
 
     expect(matchingCards.length).toBeGreaterThan(0);
     expect(matchingCards.map((card: { id: string }) => card.id)).toContain(scenarioState.card!.id);
+  },
+);
+
+Given(
+  'the member does not have any {string} named {string}',
+  async ({ scenarioState, memberClient }, resourceType: string, dataName: string) => {
+    const response = await memberClient.getMemberField(scenarioState.member!.id, resourceType);
+    const itemsArray: NamedResource[] = await response.json();
+    expect(itemsArray).toBeDefined();
+
+    const filteredItems = itemsArray.filter((item) => item.name.includes(dataName));
+    expect(filteredItems.length).toBe(0);
+  },
+);
+
+Then(
+  'the response contains an empty {string} array',
+  async ({ scenarioState }, resourceType: string) => {
+    const itemsArray = await scenarioState.response!.json();
+
+    expect(Array.isArray(itemsArray[resourceType])).toBe(true);
+    expect(itemsArray[resourceType].length).toBe(0);
   },
 );

@@ -27,3 +27,14 @@ After({ tags: '@cleanup-board' }, async ({ scenarioState, boardClient, $testInfo
   }
   console.log(`Cleanup completed: ${$testInfo.title} with tags: ${$testInfo.tags}`);
 });
+
+After({ tags: '@cleanup-organization' }, async ({ scenarioState, organizationClient }) => {
+  for (const orgId of [...scenarioState.createdOrganizationIds].reverse()) {
+    const response = await organizationClient.deleteOrganization(orgId);
+    if (!response.ok()) {
+      logger.error(`Failed to delete organization with ID: ${orgId}. Status: ${response.status()}`);
+    } else {
+      logger.info(`Deleted organization with ID: ${orgId} after scenario.`);
+    }
+  }
+});

@@ -72,6 +72,9 @@ Given(
     scenarioState.board = board;
 
     const listResponse = await listClient.createList(board.id, listName);
+    logger.error(
+      `Created list with ID: ${(await listResponse.json()).id} and name: ${(await listResponse.json()).name}`,
+    );
     const list = await listResponse.json();
     expect(list.id).toBeTruthy();
     scenarioState.list = list;
@@ -83,16 +86,13 @@ Given(
   },
 );
 
-Given(
-  'the member is assigned to the card named {string}',
-  async ({ scenarioState, cardClient }, dataName: string) => {
-    const response = await cardClient.addMemberToCard(
-      scenarioState.card!.id,
-      scenarioState.member!.id,
-    );
-    await expect(response).toBeOK();
+Given(/^the member is assigned to the card named ".*"$/, async ({ scenarioState, cardClient }) => {
+  const response = await cardClient.addMemberToCard(
+    scenarioState.card!.id,
+    scenarioState.member!.id,
+  );
+  await expect(response).toBeOK();
 
-    const responseJson = await response.json();
-    expect(responseJson).toBeDefined();
-  },
-);
+  const responseJson = await response.json();
+  expect(responseJson).toBeDefined();
+});

@@ -54,6 +54,7 @@ Given(
       scenarioState.board!.id,
       position,
     );
+    expect(starResponse.ok()).toBe(true);
     const boardStar = await starResponse.json();
     expect(boardStar).toBeTruthy();
     scenarioState.boardStar = boardStar;
@@ -72,8 +73,8 @@ When(
 );
 
 Then(
-  'the GET response contains the {string} board star with the correct values',
-  async ({ scenarioState, memberClient }, position: string) => {
+  /^the GET response contains the "(?:created|updated)" board star with the correct values$/,
+  async ({ scenarioState, memberClient }) => {
     const response = await memberClient.getBoardStar(
       scenarioState.member!.id,
       scenarioState.boardStar!.id,

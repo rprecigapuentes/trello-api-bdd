@@ -1,7 +1,10 @@
+import { APIResponse } from '@playwright/test';
 import { CardClient } from '../api/clients/CardClient';
 import { BoardClient } from '../api/clients/BoardClient';
 import { ListClient } from '../api/clients/ListClient';
 import { MemberClient } from '../api/clients/MemberClient';
+import { SearchClient } from '../api/clients/SearchClient';
+import { OrganizationClient } from '../api/clients/OrganizationClient';
 import {
   TrelloBoardSchema,
   TrelloListSchema,
@@ -9,7 +12,7 @@ import {
   TrelloMemberSchema,
   TrelloBoardStarSchema,
 } from '../api/schemas/trelloSchemas';
-import type { APIResponse } from '@playwright/test';
+import { OrganizationSchema } from '../api/schemas/organizationSchemas';
 import { test as base } from 'playwright-bdd';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -26,6 +29,9 @@ export interface ScenarioState {
   member?: TrelloMemberSchema;
   response?: APIResponse;
   boardStar?: TrelloBoardStarSchema;
+  organization?: OrganizationSchema;
+  generated: Record<string, string>;
+  createdOrganizationIds: string[];
 }
 
 type MyFixtures = {
@@ -35,6 +41,8 @@ type MyFixtures = {
   listClient: ListClient;
   memberClient: MemberClient;
   scenarioState: ScenarioState;
+  organizationClient: OrganizationClient;
+  searchClient: SearchClient;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -60,7 +68,24 @@ export const test = base.extend<MyFixtures>({
     logger.info('Initializing Member Client fixture...');
     await use(new MemberClient(request, authStrategy));
   },
+  searchClient: async ({ request, authStrategy }, use) => {
+    logger.info('Initializing Search Client fixture...');
+    if (!process.env.TRELLO_API_KEY || !process.env.TRELLO_API_TOKEN) {
+      throw new Error('Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.');
+    }
+    const client = new SearchClient(request, authStrategy);
+    await use(client);
+  },
+  organizationClient: async ({ request, authStrategy }, use) => {
+    logger.info('Initializing Organization Client fixture...');
+    if (!process.env.TRELLO_API_KEY || !process.env.TRELLO_API_TOKEN) {
+      throw new Error('Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.');
+    }
+    const client = new OrganizationClient(request, authStrategy);
+    await use(client);
+  },
   scenarioState: async ({}, use) => {
-    await use({});
+    const state: ScenarioState = { generated: {}, createdOrganizationIds: [] };
+    await use(state);
   },
 });

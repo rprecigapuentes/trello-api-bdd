@@ -17,10 +17,10 @@ export class MemberClient extends BaseClient {
     return response;
   }
 
-  async createBoardStar(memberId: string, boardId: string, pos: string): Promise<APIResponse> {
+  async createBoardStar(memberId: string, boardId: string, position: string): Promise<APIResponse> {
     const response: APIResponse = await this.post(`/1/members/${memberId}/boardStars`, {
       idBoard: boardId,
-      pos,
+      pos: position,
     });
     return response;
   }
