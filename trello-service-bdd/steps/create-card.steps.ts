@@ -17,7 +17,7 @@ let card: TrelloCardSchema;
 const testCardName = 'Automated Card';
 const testCardDesc = 'Created via Playwright BDD';
 
-Given('I have created a new board', async ({ boardClient, scenarioState }) => {
+Given('I have created a new board', async ({ boardClient }) => {
   logger.info('Creating prerequisite board for card scenario...');
   const response = await boardClient.createBoard('BDD Test Board');
   board = await response.json();

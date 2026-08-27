@@ -2,7 +2,6 @@ import { createBdd } from 'playwright-bdd';
 import { test } from '../fixtures/fixtures';
 import { logger, setupLogger } from '@core';
 // import { afterEach } from 'node:test';
-import { BoardClient } from '../api/clients/BoardClient';
 
 const { Before, After, BeforeAll } = createBdd(test);
 
@@ -26,5 +25,16 @@ After({ tags: '@cleanup-board' }, async ({ scenarioState, boardClient, $testInfo
     logger.info(
       `Deleted board with ID: ${scenarioState.board.id} after scenario: ${$testInfo.title}`,
     );
+  }
+});
+
+After({ tags: '@cleanup-organization' }, async ({ scenarioState, organizationClient }) => {
+  for (const orgId of [...scenarioState.createdOrganizationIds].reverse()) {
+    const response = await organizationClient.delete(orgId);
+    if (!response.ok()) {
+      logger.error(`Failed to delete organization with ID: ${orgId}. Status: ${response.status()}`);
+    } else {
+      logger.info(`Deleted organization with ID: ${orgId} after scenario.`);
+    }
   }
 });

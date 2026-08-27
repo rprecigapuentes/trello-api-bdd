@@ -4,7 +4,7 @@ import { expect } from '@playwright/test';
 import { trelloBoardSchema, trelloMemberSchema } from '../api/schemas/trelloSchemas';
 import { logger } from '@core/utils/logger';
 
-const { Given, When, Then, After } = createBdd(test);
+const { Given, When, Then } = createBdd(test);
 
 //This step retrives the ID of the own member and stores it in the scenario state for later use
 Given('a member with a valid ID exists', async ({ memberClient, scenarioState }) => {
