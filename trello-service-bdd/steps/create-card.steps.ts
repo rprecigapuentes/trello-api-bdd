@@ -86,7 +86,7 @@ Given(
   },
 );
 
-Given('the member is assigned to the card', async ({ scenarioState, cardClient }) => {
+Given(/^the member is assigned to the card named ".*"$/, async ({ scenarioState, cardClient }) => {
   const response = await cardClient.addMemberToCard(
     scenarioState.card!.id,
     scenarioState.member!.id,

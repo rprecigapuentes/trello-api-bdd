@@ -1,6 +1,7 @@
+@cleanup-board
 Feature: Members Board Stars CRUD
 
-    @SCRUM-T10 @cleanup-board 
+    @SCRUM-T10
     Scenario: Create a board star for a member by a valid member ID and board ID
         Given a member with a valid ID exists
         And the member has a board named "SCRUM-T10"
@@ -17,7 +18,7 @@ Feature: Members Board Stars CRUD
         | 10000     |
         | 1000.1    |
 
-    @SCRUM-T12 @cleanup-board 
+    @SCRUM-T12
     Scenario: Get a board star for a member by a valid member ID and board star ID
         Given a member with a valid ID exists
         And the member has a board star with the "top" position in a board named "SCRUM-T12"
@@ -26,7 +27,7 @@ Feature: Members Board Stars CRUD
         And the response contains a valid board star schema
         And the response contains the correct board ID and "top" field value
 
-    @SCRUM-T16 @cleanup-board 
+    @SCRUM-T16
     Scenario: Update a board star for a member by a valid member ID and board star ID
         Given a member with a valid ID exists
         And the member has a board star with the "10" position in a board named "SCRUM-T16"
@@ -43,7 +44,7 @@ Feature: Members Board Stars CRUD
         | 10000     |
         | 1000.1    |
 
-    @SCRUM-T26 @cleanup-board 
+    @SCRUM-T26
     Scenario: Delete a board star for a member by a valid member ID and board star ID
         Given a member with a valid ID exists
         And the member has a board star with the "top" position in a board named "SCRUM-T26"
