@@ -6,7 +6,7 @@ import { logger } from '@core/utils/logger';
 
 const { Given, When, Then, After } = createBdd(test);
 
-Then('the response contains a valid array of boards schema', async ({ scenarioState }) => {
+Then('the response contains a valid array of boards', async ({ scenarioState }) => {
   const responseJson = await scenarioState.response!.json();
   expect(Array.isArray(responseJson)).toBe(true);
 
@@ -34,12 +34,12 @@ Then(
   },
 );
 
-Then('the response contains an empty array of boards schema', async ({ scenarioState }) => {
+Then('the response contains an empty array of boards', async ({ scenarioState }) => {
   const boardsArray = await scenarioState.response!.json();
   expect(boardsArray.length).toBe(0);
 });
 
-Then('the response contains a valid array of cards schema', async ({ scenarioState }) => {
+Then('the response contains a valid array of cards', async ({ scenarioState }) => {
   const responseJson = await scenarioState.response!.json();
   expect(Array.isArray(responseJson)).toBe(true);
 
@@ -56,7 +56,7 @@ Then(
   'the response contains the card named {string} in the array of cards',
   async ({ scenarioState }, cardName: string) => {
     const cardsArray = await scenarioState.response!.json();
-    const matchingCards = cardsArray.filter((card: { name: string; id: string }) =>
+    const matchingCards = cardsArray.filter((card: { name: string }) =>
       card.name.includes(cardName),
     );
 
