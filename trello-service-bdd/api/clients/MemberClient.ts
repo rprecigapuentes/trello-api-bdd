@@ -1,5 +1,4 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
-import { TrelloBoardStarSchema } from '../schemas/trelloSchemas';
 
 export class MemberClient {
   private readonly request: APIRequestContext;
