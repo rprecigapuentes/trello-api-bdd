@@ -54,8 +54,9 @@ Then('I clean up by deleting the board', async ({ boardClient, scenarioState }) 
   }
 });
 
+//This includes 2 steps that are written differently, but they made the same
 Given(
-  'the member has at least one board named {string}',
+  /^the member has (?:a|at least one) board named "([^"]+)"$/,
   async ({ scenarioState, boardClient }, boardName: string) => {
     boardName = testDataName(boardName, 'Board');
     const response = await boardClient.createBoard(boardName);
@@ -64,3 +65,12 @@ Given(
     scenarioState.board = board;
   },
 );
+
+Given('the member has no boards', async ({ boardClient, memberClient }) => {
+  const response = await memberClient.getMyMember();
+  const member = await response.json();
+  for (const boardId of member.idBoards) {
+    await boardClient.deleteBoard(boardId);
+  }
+  logger.info(`List of boards for member ID ${member.id}: ${member.idBoards.join(', ')}`);
+});

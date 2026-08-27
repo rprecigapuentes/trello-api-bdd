@@ -31,4 +31,16 @@ export class CardClient {
     const response = await this.request.delete(`/1/cards/${cardId}`);
     return response;
   }
+
+  async addMemberToCard(cardId: string, memberId: string): Promise<APIResponse> {
+    const response = await this.request.post(`/1/cards/${cardId}/idMembers`, {
+      params: { value: memberId },
+    });
+    return response;
+  }
+
+  async removeMemberFromCard(cardId: string, memberId: string): Promise<APIResponse> {
+    const response = await this.request.delete(`/1/cards/${cardId}/idMembers/${memberId}`);
+    return response;
+  }
 }

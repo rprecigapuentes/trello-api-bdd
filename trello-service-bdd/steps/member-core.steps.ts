@@ -1,7 +1,7 @@
 import { createBdd } from 'playwright-bdd';
 import { test } from '../fixtures/fixtures';
 import { expect } from '@playwright/test';
-import { trelloBoardSchema, trelloMemberSchema } from '../api/schemas/trelloSchemas';
+import { trelloMemberSchema } from '../api/schemas/trelloSchemas';
 import { logger } from '@core/utils/logger';
 
 const { Given, When, Then } = createBdd(test);
@@ -54,8 +54,9 @@ Given('{string} is an invalid field of the member model', async ({}, nonExistent
   expect(memberFields).not.toContain(nonExistentField);
 });
 
+//common step for fetching a specific field of the member model
 When(
-  String.raw`the user sends a GET request to \/members\/\{memberId\}\/{word}`,
+  String.raw`the user sends a GET request to \/members\/\{memberId\}\/{string}`,
   async ({ memberClient, scenarioState }, field: string) => {
     const response = await memberClient.getMemberField(scenarioState.member!.id, field);
     scenarioState.response = response;
@@ -77,34 +78,6 @@ Then(
     const responseJson = await scenarioState.response!.text();
     expect(responseJson).toMatch(
       `Cannot GET /1/members/${scenarioState.member!.id}/${nonExistentField}`,
-    );
-  },
-);
-
-Then('the response contains a valid array of boards schema', async ({ scenarioState }) => {
-  const responseJson = await scenarioState.response!.json();
-  expect(Array.isArray(responseJson)).toBe(true);
-
-  for (const board of responseJson) {
-    const validationResult = trelloBoardSchema.safeParse(board);
-    if (!validationResult.success) {
-      logger.error(`Board schema validation failed: ${validationResult.error.message}`);
-    }
-    expect(validationResult.success).toBe(true);
-  }
-});
-
-Then(
-  'the response contains the board named {string} in the array of boards',
-  async ({ scenarioState }, boardName: string) => {
-    const boardsArray = await scenarioState.response!.json();
-    const matchingBoards = boardsArray.filter((board: { name: string; id: string }) =>
-      board.name.includes(boardName),
-    );
-
-    expect(matchingBoards.length).toBeGreaterThan(0);
-    expect(matchingBoards.map((board: { id: string }) => board.id)).toContain(
-      scenarioState.board!.id,
     );
   },
 );

@@ -9,6 +9,7 @@ import {
   TrelloListSchema,
   TrelloCardSchema,
   TrelloMemberSchema,
+  TrelloBoardStarSchema,
 } from '../api/schemas/trelloSchemas';
 import { OrganizationSchema } from '../api/schemas/organizationSchemas';
 import { test as base } from 'playwright-bdd';
@@ -24,6 +25,7 @@ export interface ScenarioState {
   card?: TrelloCardSchema;
   member?: TrelloMemberSchema;
   response?: APIResponse;
+  boardStar?: TrelloBoardStarSchema;
   organization?: OrganizationSchema;
   generated: Record<string, string>;
   createdOrganizationIds: string[];
