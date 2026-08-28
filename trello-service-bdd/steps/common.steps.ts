@@ -20,7 +20,18 @@ Then('the response body contains {string}', async ({ scenarioState }, text: stri
   expect(body).toContain(text);
 });
 
-Then('the response body reports that the {word} was not found', async ({ scenarioState }) => {
-  const body = await scenarioState.response!.text();
-  expect(body).toContain('model not found');
-});
+Then(
+  'the response body reports that the {string} was not found',
+  async ({ scenarioState }, resource: string) => {
+    const body = await scenarioState.response!.text();
+    expect(body).toContain(`${resource} not found`);
+  },
+);
+
+Then(
+  'the response body reports that the requested resource was not found',
+  async ({ scenarioState }) => {
+    const body = await scenarioState.response!.text();
+    expect(body).toContain('The requested resource was not found.');
+  },
+);

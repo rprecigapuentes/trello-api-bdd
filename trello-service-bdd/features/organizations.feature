@@ -66,3 +66,21 @@ Feature: Trello organizations
         When the user deletes the organization logo
         Then the response status code is "200"
         And the organization has no logoHash
+
+    @regression @SCRUM-T67
+    Scenario: Create an organization omitting the required displayName
+        When the user creates an organization omitting displayName
+        Then the response status code is "400"
+        And the response body contains "Display Name must be at least 1 character"
+
+    @regression @SCRUM-T68
+    Scenario: Update an organization with a non-existent id
+        When the user updates the organization with id "000000000000000000000000" with a generated displayName
+        Then the response status code is "404"
+        And the response body reports that the requested resource was not found
+
+    @regression @SCRUM-T69
+    Scenario: Delete an organization with a non-existent id
+        When the user deletes the organization with id "000000000000000000000000"
+        Then the response status code is "404"
+        And the response body reports that the requested resource was not found
