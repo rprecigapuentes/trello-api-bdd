@@ -28,17 +28,32 @@ After({ tags: '@cleanup-board' }, async ({ scenarioState, boardClient, $testInfo
   console.log(`Cleanup completed: ${$testInfo.title} with tags: ${$testInfo.tags}`);
 });
 
-After({ tags: '@cleanup-background' }, async ({ scenarioState, backgroundApi, $testInfo }) => {
+After({ tags: '@cleanup-background' }, async ({ scenarioState, backgroundClient, $testInfo }) => {
   if ($testInfo.status === 'failed') {
     logger.error(`Scenario failed: ${$testInfo.title}`);
   }
   if (scenarioState.background) {
-    await backgroundApi.deleteBackground(scenarioState.background.id);
+    await backgroundClient.deleteBackground(scenarioState.background.id);
     logger.info(
       `Deleted background with ID: ${scenarioState.background.id} after scenario: ${$testInfo.title}`,
     );
   }
 });
+
+After(
+  { tags: '@cleanup-custom-background' },
+  async ({ scenarioState, customBackgroundClient, $testInfo }) => {
+    if ($testInfo.status === 'failed') {
+      logger.error(`Scenario failed: ${$testInfo.title}`);
+    }
+    if (scenarioState.background) {
+      await customBackgroundClient.deleteCustomBackground(scenarioState.background.id);
+      logger.info(
+        `Deleted custom background with ID: ${scenarioState.background.id} after scenario: ${$testInfo.title}`,
+      );
+    }
+  },
+);
 
 After({ tags: '@cleanup-organization' }, async ({ scenarioState, organizationClient }) => {
   for (const orgId of [...scenarioState.createdOrganizationIds].reverse()) {

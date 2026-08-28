@@ -11,9 +11,9 @@ const { Given, When, Then } = createBdd(test);
 
 Given(
   'an existing standard board background with file {string}',
-  async ({ backgroundApi, scenarioState }, file: string) => {
+  async ({ backgroundClient, scenarioState }, file: string) => {
     logger.info(`Creating prerequisite background with file: ${file}`);
-    const response = await backgroundApi.uploadBackground(file);
+    const response = await backgroundClient.uploadBackground(file);
     scenarioState.response = response;
     if (response.ok()) {
       scenarioState.background = trelloBoardBackgroundSchema.parse(await response.json());
@@ -23,9 +23,9 @@ Given(
 
 When(
   'the user uploads a standard board background with file {string}',
-  async ({ backgroundApi, scenarioState }, file: string) => {
+  async ({ backgroundClient, scenarioState }, file: string) => {
     logger.info(`Uploading standard board background with file: ${file}`);
-    const response = await backgroundApi.uploadBackground(file);
+    const response = await backgroundClient.uploadBackground(file);
     scenarioState.response = response;
     if (response.ok()) {
       scenarioState.background = trelloBoardBackgroundSchema.parse(await response.json());
@@ -40,9 +40,9 @@ Then('the response contains a background object with a non-empty id', async ({ s
   expect(scenarioState.background?.id.length).toBeGreaterThan(0);
 });
 
-When('the user retrieves the board backgrounds', async ({ backgroundApi, scenarioState }) => {
+When('the user retrieves the board backgrounds', async ({ backgroundClient, scenarioState }) => {
   logger.info('Retrieving all board backgrounds');
-  const response = await backgroundApi.getBackgrounds();
+  const response = await backgroundClient.getBackgrounds();
   scenarioState.response = response;
 });
 
@@ -59,11 +59,11 @@ Then('the response includes the newly created background ID', async ({ scenarioS
 
 When(
   'the user updates the board background with parameter {string} set to {string}',
-  async ({ backgroundApi, scenarioState }, param: string, value: string) => {
+  async ({ backgroundClient, scenarioState }, param: string, value: string) => {
     const id = scenarioState.background?.id;
     if (!id) throw new Error('No background ID saved');
     logger.info(`Updating background ${id}: ${param} = ${value}`);
-    const response = await backgroundApi.updateBackground(id, { [param]: value });
+    const response = await backgroundClient.updateBackground(id, { [param]: value });
     scenarioState.response = response;
     if (response.ok()) {
       scenarioState.background = trelloBoardBackgroundSchema.parse(await response.json());
@@ -71,11 +71,11 @@ When(
   },
 );
 
-When('the user retrieves the background', async ({ backgroundApi, scenarioState }) => {
+When('the user retrieves the background', async ({ backgroundClient, scenarioState }) => {
   const id = scenarioState.background?.id;
   if (!id) throw new Error('No background ID saved');
   logger.info(`Retrieving background: ${id}`);
-  const response = await backgroundApi.getBackground(id);
+  const response = await backgroundClient.getBackground(id);
   scenarioState.response = response;
   if (response.ok()) {
     scenarioState.background = trelloBoardBackgroundSchema.parse(await response.json());
@@ -93,21 +93,21 @@ Then(
   },
 );
 
-When('the user deletes the board background', async ({ backgroundApi, scenarioState }) => {
+When('the user deletes the board background', async ({ backgroundClient, scenarioState }) => {
   const id = scenarioState.background?.id;
   if (!id) throw new Error('No background ID saved');
   logger.info(`Deleting background: ${id}`);
-  const response = await backgroundApi.deleteBackground(id);
+  const response = await backgroundClient.deleteBackground(id);
   scenarioState.response = response;
 });
 
 When(
   'the user attempts to retrieve the deleted background',
-  async ({ backgroundApi, scenarioState }) => {
+  async ({ backgroundClient, scenarioState }) => {
     const id = scenarioState.background?.id;
     if (!id) throw new Error('No background ID saved');
     logger.info(`Attempting to retrieve deleted background: ${id}`);
-    const response = await backgroundApi.getBackground(id);
+    const response = await backgroundClient.getBackground(id);
     scenarioState.response = response;
   },
 );
