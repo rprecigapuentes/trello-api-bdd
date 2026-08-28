@@ -1,19 +1,16 @@
-import { APIRequestContext, APIResponse } from '@playwright/test';
+import { APIResponse } from '@playwright/test';
+import { BaseClient } from './BaseClient';
 
-export class NotificationClient {
-  constructor(private request: APIRequestContext) {}
-
+export class NotificationClient extends BaseClient {
   async updateNotificationReadStatus(id: string, unread: boolean): Promise<APIResponse> {
-    return await this.request.put(`1/notifications/${id}`, {
-      params: { unread },
-    });
+    return await this.put(`1/notifications/${id}`, { unread });
   }
 
   async markAllNotificationsAsRead(): Promise<APIResponse> {
-    return await this.request.post('1/notifications/all/read');
+    return await this.post('1/notifications/all/read');
   }
 
   async getMyNotifications(): Promise<APIResponse> {
-    return await this.request.get('1/members/me/notifications');
+    return await this.get('1/members/me/notifications');
   }
 }

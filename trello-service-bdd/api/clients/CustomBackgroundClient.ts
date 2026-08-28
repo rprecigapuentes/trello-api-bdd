@@ -1,17 +1,22 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
 import { logger, readTestAsset } from '@core';
+import { BaseClient } from './BaseClient';
+import { IAuthStrategy } from '../auth/auth-strategy.interface';
 
-export class CustomBackgroundClient {
+export class CustomBackgroundClient extends BaseClient {
   constructor(
-    private request: APIRequestContext,
-    private workspace: string,
-  ) {}
+    request: APIRequestContext,
+    authStrategy: IAuthStrategy,
+    private readonly workspace: string,
+  ) {
+    super(request, authStrategy);
+  }
 
   async uploadCustomBackground(fileName: string): Promise<APIResponse> {
     const fileBuffer = readTestAsset(this.workspace, fileName);
     const mimeType = fileName.endsWith('.png') ? 'image/png' : 'image/jpeg';
 
-    const response = await this.request.post('/1/members/me/customBoardBackgrounds', {
+    const response = await this.post('/1/members/me/customBoardBackgrounds', {
       multipart: {
         file: { name: fileName, mimeType, buffer: fileBuffer },
       },
@@ -21,13 +26,13 @@ export class CustomBackgroundClient {
   }
 
   async getCustomBackgrounds(): Promise<APIResponse> {
-    const response = await this.request.get('/1/members/me/customBoardBackgrounds');
+    const response = await this.get('/1/members/me/customBoardBackgrounds');
     logger.debug(`GET /1/members/me/customBoardBackgrounds - Status ${response.status()}`);
     return response;
   }
 
   async getCustomBackground(backgroundId: string): Promise<APIResponse> {
-    const response = await this.request.get(`/1/members/me/customBoardBackgrounds/${backgroundId}`);
+    const response = await this.get(`/1/members/me/customBoardBackgrounds/${backgroundId}`);
     logger.debug(
       `GET /1/members/me/customBoardBackgrounds/${backgroundId} - Status ${response.status()}`,
     );
@@ -38,9 +43,9 @@ export class CustomBackgroundClient {
     backgroundId: string,
     updates: Record<string, string>,
   ): Promise<APIResponse> {
-    const response = await this.request.put(
+    const response = await this.put(
       `/1/members/me/customBoardBackgrounds/${backgroundId}`,
-      { params: updates },
+      updates,
     );
     logger.debug(
       `PUT /1/members/me/customBoardBackgrounds/${backgroundId} - Status ${response.status()}`,
@@ -49,9 +54,7 @@ export class CustomBackgroundClient {
   }
 
   async deleteCustomBackground(backgroundId: string): Promise<APIResponse> {
-    const response = await this.request.delete(
-      `/1/members/me/customBoardBackgrounds/${backgroundId}`,
-    );
+    const response = await this.delete(`/1/members/me/customBoardBackgrounds/${backgroundId}`);
     logger.debug(
       `DELETE /1/members/me/customBoardBackgrounds/${backgroundId} - Status ${response.status()}`,
     );

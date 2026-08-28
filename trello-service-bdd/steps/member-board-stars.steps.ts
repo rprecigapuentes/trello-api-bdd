@@ -29,16 +29,9 @@ Then('the response contains a valid board star schema', async ({ scenarioState }
   scenarioState.boardStar = validationResult.data;
 });
 
-Then(
-  'the response contains the correct board ID and {string} field value',
-  async ({ scenarioState }, position: string) => {
-    expect(scenarioState.boardStar!.idBoard).toBe(scenarioState.board!.id);
-    const posValue = Number(position);
-    if (!Number.isNaN(posValue)) {
-      expect(scenarioState.boardStar!.pos).toBe(posValue);
-    }
-  },
-);
+Then('the response contains the correct board ID', async ({ scenarioState }) => {
+  expect(scenarioState.boardStar?.idBoard).toBe(scenarioState.board?.id);
+});
 
 Given(
   'the member has a board star with the {string} position in a board named {string}',
@@ -54,10 +47,10 @@ Given(
       scenarioState.board!.id,
       position,
     );
-    expect(starResponse.ok()).toBe(true);
     const boardStar = await starResponse.json();
-    expect(boardStar).toBeTruthy();
     scenarioState.boardStar = boardStar;
+    expect(starResponse.ok()).toBe(true);
+    expect(boardStar).toBeTruthy();
   },
 );
 

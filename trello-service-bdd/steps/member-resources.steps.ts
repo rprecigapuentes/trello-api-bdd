@@ -60,12 +60,12 @@ Then(
   'the response contains the card named {string} in the array of cards',
   async ({ scenarioState }, cardName: string) => {
     const cardsArray = await scenarioState.response!.json();
-    const matchingCards = cardsArray.filter((card: { name: string }) =>
-      card.name.includes(cardName),
+    const matchingCard = cardsArray.find(
+      (card: { id: string }) => card.id === scenarioState.card!.id,
     );
 
-    expect(matchingCards.length).toBeGreaterThan(0);
-    expect(matchingCards.map((card: { id: string }) => card.id)).toContain(scenarioState.card!.id);
+    expect(matchingCard).toBeDefined();
+    expect(matchingCard.name).toContain(cardName);
   },
 );
 

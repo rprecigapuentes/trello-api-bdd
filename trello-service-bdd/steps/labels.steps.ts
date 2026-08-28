@@ -19,7 +19,7 @@ Given('a board exists', async ({ scenarioState, boardClient, $testInfo }) => {
 Given('a label exists on that board', async ({ scenarioState, labelClient, $testInfo }) => {
   const name = testDataName(zephyrKey($testInfo.tags), 'Label');
   const color = 'green';
-  const response = await labelClient.create({ name, color, idBoard: scenarioState.board!.id });
+  const response = await labelClient.createLabel({ name, color, idBoard: scenarioState.board!.id });
   expect(response.ok()).toBe(true);
   scenarioState.generated.name = name;
   scenarioState.generated.color = color;
@@ -34,7 +34,7 @@ When(
     const name = testDataName(zephyrKey($testInfo.tags), 'Label');
     scenarioState.generated.name = name;
     scenarioState.generated.color = color;
-    scenarioState.response = await labelClient.create({
+    scenarioState.response = await labelClient.createLabel({
       name,
       color,
       idBoard: scenarioState.board!.id,
@@ -53,7 +53,10 @@ When(
   async ({ scenarioState, labelClient, $testInfo }) => {
     const name = testDataName(zephyrKey($testInfo.tags), 'Label');
     scenarioState.generated.name = name;
-    scenarioState.response = await labelClient.create({ name, idBoard: scenarioState.board!.id });
+    scenarioState.response = await labelClient.createLabel({
+      name,
+      idBoard: scenarioState.board!.id,
+    });
   },
 );
 
@@ -62,12 +65,12 @@ When(
   async ({ scenarioState, labelClient, $testInfo }, boardId: string, color: string) => {
     const name = testDataName(zephyrKey($testInfo.tags), 'Label');
     scenarioState.generated.name = name;
-    scenarioState.response = await labelClient.create({ name, color, idBoard: boardId });
+    scenarioState.response = await labelClient.createLabel({ name, color, idBoard: boardId });
   },
 );
 
 When('the user updates the label sending no parameters', async ({ scenarioState, labelClient }) => {
-  scenarioState.response = await labelClient.update(scenarioState.label!.id, {});
+  scenarioState.response = await labelClient.updateLabel(scenarioState.label!.id, {});
   if (scenarioState.response.ok()) {
     scenarioState.label = await scenarioState.response.json();
   }
@@ -79,7 +82,10 @@ When(
     const name = testDataName(zephyrKey($testInfo.tags), 'Label');
     scenarioState.generated.name = name;
     scenarioState.generated.color = color;
-    scenarioState.response = await labelClient.update(scenarioState.label!.id, { name, color });
+    scenarioState.response = await labelClient.updateLabel(scenarioState.label!.id, {
+      name,
+      color,
+    });
     if (scenarioState.response.ok()) {
       scenarioState.label = await scenarioState.response.json();
       logger.info(
@@ -94,13 +100,13 @@ When(
   async ({ scenarioState, labelClient, $testInfo }, labelId: string) => {
     const name = testDataName(zephyrKey($testInfo.tags), 'Label');
     scenarioState.generated.name = name;
-    scenarioState.response = await labelClient.update(labelId, { name });
+    scenarioState.response = await labelClient.updateLabel(labelId, { name });
   },
 );
 
 When('the user deletes the label', async ({ scenarioState, labelClient }) => {
   const labelId = scenarioState.label!.id;
-  scenarioState.response = await labelClient.delete(labelId);
+  scenarioState.response = await labelClient.deleteLabel(labelId);
   if (scenarioState.response.ok()) {
     logger.info(`Deleted label with ID: ${labelId}`);
   }
@@ -135,7 +141,7 @@ Then(
   'a request for the deleted label returns status 404',
   async ({ scenarioState, labelClient }) => {
     const labelId = scenarioState.label!.id;
-    const response = await labelClient.get(labelId);
+    const response = await labelClient.getLabel(labelId);
     logger.info(
       `Requesting deleted label with ID: ${labelId}. Expected status: 404, Actual status: ${response.status()}`,
     );

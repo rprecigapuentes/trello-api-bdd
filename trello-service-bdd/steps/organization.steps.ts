@@ -172,7 +172,7 @@ When(
 
 When('the user deletes the organization', async ({ organizationClient, scenarioState }) => {
   const orgId = scenarioState.organization!.id;
-  scenarioState.response = await organizationClient.delete(orgId);
+  scenarioState.response = await organizationClient.deleteOrganization(orgId);
   if (scenarioState.response.ok()) {
     logger.info(`Deleted organization with ID: ${orgId}`);
   }
@@ -181,7 +181,7 @@ When('the user deletes the organization', async ({ organizationClient, scenarioS
 When(
   'the user deletes the organization with id {string}',
   async ({ organizationClient, scenarioState }, orgId: string) => {
-    scenarioState.response = await organizationClient.delete(orgId);
+    scenarioState.response = await organizationClient.deleteOrganization(orgId);
   },
 );
 
@@ -251,7 +251,7 @@ Then(
   'a request for the deleted organization returns status 404',
   async ({ organizationClient, scenarioState }) => {
     const orgId = scenarioState.organization!.id;
-    const response = await organizationClient.get(orgId);
+    const response = await organizationClient.getOrganization(orgId);
     logger.info(
       `Requesting deleted organization with ID: ${orgId}. Expected status: 404, Actual status: ${response.status()}`,
     );
@@ -278,7 +278,7 @@ Then(
 
 Then('the organization has no logoHash', async ({ organizationClient, scenarioState }) => {
   const orgId = scenarioState.organization!.id;
-  const response = await organizationClient.get(orgId);
+  const response = await organizationClient.getOrganization(orgId);
   const body = await response.json();
   expect(response.status()).toBe(200);
   expect(body.logoHash).toBeNull();
