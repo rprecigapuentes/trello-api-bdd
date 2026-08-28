@@ -105,7 +105,7 @@ export const test = base.extend<MyFixtures>({
     if (!process.env.TRELLO_API_KEY || !process.env.TRELLO_API_TOKEN) {
       throw new Error('Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.');
     }
-    const client = new OrganizationClient(request);
+    const client = new OrganizationClient(request, 'trello-service-bdd');
     await use(client);
   },
   scenarioState: async ({}, use) => {
