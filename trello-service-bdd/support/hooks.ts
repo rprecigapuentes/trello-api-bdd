@@ -65,3 +65,27 @@ After({ tags: '@cleanup-organization' }, async ({ scenarioState, organizationCli
     }
   }
 });
+
+After({ tags: '@cleanup-sticker' }, async ({ scenarioState, customStickerClient, $testInfo }) => {
+  if ($testInfo.status === 'failed') {
+    logger.error(`Scenario failed: ${$testInfo.title}`);
+  }
+  if (scenarioState.sticker) {
+    await customStickerClient.deleteCustomSticker(scenarioState.sticker.id);
+    logger.info(
+      `Deleted custom sticker with ID: ${scenarioState.sticker.id} after scenario: ${$testInfo.title}`,
+    );
+  }
+});
+
+After({ tags: '@cleanup-webhook' }, async ({ scenarioState, webhookClient, $testInfo }) => {
+  if ($testInfo.status === 'failed') {
+    logger.error(`Scenario failed: ${$testInfo.title}`);
+  }
+  if (scenarioState.webhook) {
+    await webhookClient.deleteWebhook(scenarioState.webhook.id);
+    logger.info(
+      `Deleted webhook with ID: ${scenarioState.webhook.id} after scenario: ${$testInfo.title}`,
+    );
+  }
+});

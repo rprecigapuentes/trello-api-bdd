@@ -28,3 +28,18 @@ Feature: Custom Board Backgrounds
     Then the response status code is "200"
     When the user attempts to retrieve the deleted custom background
     Then the response status code is "404"
+
+  @e2e
+  @SCRUM-T27
+  Scenario: Full custom background asset lifecycle execution
+    When the user uploads a custom board background with file "test-bg.png"
+    Then the response status code is "200"
+    And the response contains a custom background object with a non-empty id
+    When the user updates the custom board background with parameter "brightness" set to "light"
+    Then the response status code is "200"
+    When the user retrieves the custom background
+    Then the response contains "brightness" equal to "light"
+    When the user deletes the custom board background
+    Then the response status code is "200"
+    When the user attempts to retrieve the deleted custom background
+    Then the response status code is "404"

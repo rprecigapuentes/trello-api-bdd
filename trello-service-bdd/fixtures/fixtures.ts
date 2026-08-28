@@ -7,6 +7,10 @@ import { OrganizationClient } from '../api/clients/OrganizationClient';
 import { NotificationClient } from '../api/clients/NotificationClient';
 import { BackgroundClient } from '../api/clients/BackgroundClient';
 import { CustomBackgroundClient } from '../api/clients/CustomBackgroundClient';
+import { CustomEmojiClient } from '../api/clients/CustomEmojiClient';
+import { CustomStickerClient } from '../api/clients/CustomStickerClient';
+import { WebhookClient } from '../api/clients/WebhookClient';
+import { WebhookSiteClient } from '../api/clients/WebhookSiteClient';
 import { LabelClient } from '../api/clients/LabelClient';
 import {
   TrelloBoardSchema,
@@ -16,6 +20,8 @@ import {
   TrelloBoardStarSchema,
 } from '../api/schemas/trelloSchemas';
 import { TrelloBoardBackground } from '../api/schemas/backgroundSchemas';
+import { CustomEmoji, CustomSticker } from '../api/schemas/customAssetSchemas';
+import { Webhook } from '../api/schemas/webhookSchemas';
 import type { APIResponse, APIRequestContext } from '@playwright/test';
 import { OrganizationSchema } from '../api/schemas/organizationSchemas';
 import { LabelSchema } from '../api/schemas/labelSchemas';
@@ -38,6 +44,10 @@ export interface ScenarioState {
   card?: TrelloCardSchema;
   member?: TrelloMemberSchema;
   background?: TrelloBoardBackground;
+  emoji?: CustomEmoji;
+  sticker?: CustomSticker;
+  webhook?: Webhook;
+  webhookToken?: string;
   response?: APIResponse;
   lastResponse?: APIResponse;
   [key: string]: unknown;
@@ -91,6 +101,10 @@ type MyFixtures = {
   notificationClient: NotificationClient;
   backgroundClient: BackgroundClient;
   customBackgroundClient: CustomBackgroundClient;
+  customEmojiClient: CustomEmojiClient;
+  customStickerClient: CustomStickerClient;
+  webhookClient: WebhookClient;
+  webhookSiteClient: WebhookSiteClient;
   labelClient: LabelClient;
 };
 
@@ -149,6 +163,35 @@ export const test = base.extend<MyFixtures>({
       throw new Error('Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.');
     }
     const client = new OrganizationClient(request, authStrategy, 'trello-service-bdd');
+    await use(client);
+  },
+  customEmojiClient: async ({ request, authStrategy }, use) => {
+    logger.info('Initializing Custom Emoji Client fixture...');
+    if (!process.env.TRELLO_API_KEY || !process.env.TRELLO_API_TOKEN) {
+      throw new Error('Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.');
+    }
+    const client = new CustomEmojiClient(request, authStrategy, 'trello-service-bdd');
+    await use(client);
+  },
+  customStickerClient: async ({ request, authStrategy }, use) => {
+    logger.info('Initializing Custom Sticker Client fixture...');
+    if (!process.env.TRELLO_API_KEY || !process.env.TRELLO_API_TOKEN) {
+      throw new Error('Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.');
+    }
+    const client = new CustomStickerClient(request, authStrategy, 'trello-service-bdd');
+    await use(client);
+  },
+  webhookClient: async ({ request, authStrategy }, use) => {
+    logger.info('Initializing Webhook Client fixture...');
+    if (!process.env.TRELLO_API_KEY || !process.env.TRELLO_API_TOKEN) {
+      throw new Error('Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.');
+    }
+    const client = new WebhookClient(request, authStrategy);
+    await use(client);
+  },
+  webhookSiteClient: async ({ request }, use) => {
+    logger.info('Initializing Webhook.site Client fixture...');
+    const client = new WebhookSiteClient(request);
     await use(client);
   },
   notificationClient: async ({ request, authStrategy }, use) => {
