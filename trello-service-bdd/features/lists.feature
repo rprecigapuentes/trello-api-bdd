@@ -61,3 +61,17 @@ Feature: Trello List Management API
     When the user updates the list field "name" with value "Field Specific Update"
     Then the response status code should be "200"
     And the list name should be "Field Specific Update"
+
+@SCRUM-T49 @e2e
+Scenario: TC-E2E-01 - Verify full POST, PUT, and status lifecycle across lists endpoints
+  Given a temporary board exists
+  When the user creates a list named "In Progress" in the board
+  Then the response status code should be "200"
+  
+  When the user updates the list name to "Done"
+  Then the response status code should be "200"
+  And the list name should be "Done"
+  
+  When the user archives the list
+  Then the response status code should be "200"
+  And the list closed status should be "true"
