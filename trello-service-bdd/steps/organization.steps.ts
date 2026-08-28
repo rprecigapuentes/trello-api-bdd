@@ -3,14 +3,9 @@ import { test } from '../fixtures/fixtures';
 import { testDataName, testDataSlug } from '@core';
 import { expect } from '@playwright/test';
 import { logger } from '../../core/utils/logger';
+import { zephyrKey } from './../../core/utils/zephyr-key';
 
 const { Given, When, Then } = createBdd(test);
-
-const zephyrKey = (tags: string[]): string => {
-  const tag = tags.find((t) => /^@SCRUM-T\d+$/.test(t));
-  if (!tag) throw new Error('Scenario is missing its @SCRUM-T<n> tag, needed for the tcID');
-  return tag.slice(1);
-};
 
 // Given steps
 
@@ -93,6 +88,27 @@ When(
 );
 
 When(
+  'the user creates an organization omitting displayName',
+  async ({ organizationClient, scenarioState }) => {
+    scenarioState.response = await organizationClient.create({});
+  },
+);
+
+When(
+  'the user creates a board inside that organization',
+  async ({ boardClient, scenarioState, $testInfo }) => {
+    const name = testDataName(zephyrKey($testInfo.tags), 'Board');
+    scenarioState.response = await boardClient.createBoard(name, scenarioState.organization!.id);
+    if (scenarioState.response.ok()) {
+      scenarioState.board = await scenarioState.response.json();
+      logger.info(
+        `Created board with ID: ${scenarioState.board!.id} inside organization: ${scenarioState.organization!.id}`,
+      );
+    }
+  },
+);
+
+When(
   'the user updates the organization sending no parameters',
   async ({ organizationClient, scenarioState }) => {
     const orgId = scenarioState.organization!.id;
@@ -128,6 +144,32 @@ When(
   },
 );
 
+When(
+  'the user updates the organization with a generated displayName',
+  async ({ organizationClient, scenarioState, $testInfo }) => {
+    const displayName = testDataName(zephyrKey($testInfo.tags), 'Organization');
+    scenarioState.generated.displayName = displayName;
+    scenarioState.response = await organizationClient.update(scenarioState.organization!.id, {
+      displayName,
+    });
+    if (scenarioState.response.ok()) {
+      scenarioState.organization = await scenarioState.response.json();
+      logger.info(
+        `Updated organization with ID: ${scenarioState.organization!.id} to displayName: ${displayName}`,
+      );
+    }
+  },
+);
+
+When(
+  'the user updates the organization with id {string} with a generated displayName',
+  async ({ organizationClient, scenarioState, $testInfo }, orgId: string) => {
+    const displayName = testDataName(zephyrKey($testInfo.tags), 'Organization');
+    scenarioState.generated.displayName = displayName;
+    scenarioState.response = await organizationClient.update(orgId, { displayName });
+  },
+);
+
 When('the user deletes the organization', async ({ organizationClient, scenarioState }) => {
   const orgId = scenarioState.organization!.id;
   scenarioState.response = await organizationClient.delete(orgId);
@@ -135,6 +177,13 @@ When('the user deletes the organization', async ({ organizationClient, scenarioS
     logger.info(`Deleted organization with ID: ${orgId}`);
   }
 });
+
+When(
+  'the user deletes the organization with id {string}',
+  async ({ organizationClient, scenarioState }, orgId: string) => {
+    scenarioState.response = await organizationClient.delete(orgId);
+  },
+);
 
 When(
   'the user updates the organization logo sending no parameters',

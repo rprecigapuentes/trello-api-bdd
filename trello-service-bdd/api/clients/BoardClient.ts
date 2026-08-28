@@ -8,9 +8,9 @@ export class BoardClient {
     this.request = request;
   }
 
-  async createBoard(name: string): Promise<APIResponse> {
+  async createBoard(name: string, idOrganization?: string): Promise<APIResponse> {
     const response = await this.request.post(`/1/boards`, {
-      params: { name },
+      params: idOrganization ? { name, idOrganization } : { name },
     });
     return response;
   }
