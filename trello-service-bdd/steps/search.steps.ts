@@ -58,3 +58,24 @@ Then(
     }
   },
 );
+
+When('user 2 searches for the board', async ({ user2, scenarioState }) => {
+  const response = await user2.searchClient.search(scenarioState.user1.board!.name);
+  scenarioState.response = response;
+  logger.info(`User 2 searched for the board named: ${scenarioState.user1.board!.name}`);
+});
+
+Then('user 2 can find the shared board', async ({ scenarioState }) => {
+  const responseBody = await scenarioState.response?.json();
+  expect(responseBody.boards).toBeDefined();
+
+  expect(Array.isArray(responseBody.boards)).toBe(true);
+  expect(responseBody.boards.length).toBeGreaterThan(0);
+
+  const matchingBoard = responseBody.boards.find(
+    (board: { id: string }) => board.id === scenarioState.user1.board!.id,
+  );
+
+  expect(matchingBoard?.id).toBe(scenarioState.user1.board!.id);
+  logger.info(`User 2 found the shared board with ID: ${matchingBoard?.id}`);
+});

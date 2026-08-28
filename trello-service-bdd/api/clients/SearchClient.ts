@@ -1,16 +1,9 @@
-import { APIRequestContext, APIResponse } from '@playwright/test';
+import { APIResponse } from '@playwright/test';
+import { BaseClient } from './BaseClient';
 
-export class SearchClient {
-  private readonly request: APIRequestContext;
-
-  constructor(request: APIRequestContext) {
-    this.request = request;
-  }
-
+export class SearchClient extends BaseClient {
   async search(query: string): Promise<APIResponse> {
-    const response: APIResponse = await this.request.get('/1/search', {
-      params: { query: query },
-    });
+    const response: APIResponse = await this.get('/1/search', { query: query });
     return response;
   }
 }

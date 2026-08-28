@@ -81,3 +81,16 @@ Then(
     );
   },
 );
+
+Given('2 valid members exist', async ({ user1, user2, scenarioState }) => {
+  const response1 = await user1.memberClient.getMyMember();
+  const member1 = await response1.json();
+  expect(member1.id).toBeTruthy();
+
+  const response2 = await user2.memberClient.getMyMember();
+  const member2 = await response2.json();
+  expect(member2.id).toBeTruthy();
+
+  scenarioState.user1.member = member1;
+  scenarioState.user2.member = member2;
+});

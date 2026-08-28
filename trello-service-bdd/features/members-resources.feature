@@ -23,7 +23,7 @@ Feature: Members Resources
     Scenario: Get member's assigned cards by a valid ID
         Given a member with a valid ID exists
         And the member has at least one card named "SCRUM-T30" in a list of a board
-        And the member is assigned to the card named "SCRUM-T30"
+        And the member is assigned to the card
         When the user sends a GET request to /members/{memberId}/"cards"
         Then the response status code is "200"
         And the response contains a valid array of cards 

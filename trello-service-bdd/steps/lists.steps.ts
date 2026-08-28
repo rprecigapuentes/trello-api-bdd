@@ -332,3 +332,19 @@ Then('the list board ID should match the active board ID', async ({ scenarioStat
   );
   expect(scenarioState.list.idBoard).toBe(scenarioState.board?.id);
 });
+
+Then(
+  'user 2 can create a list in the shared board named {string}',
+  async ({ scenarioState, user2 }, listName: string) => {
+    const response = await user2.listClient.createList(
+      scenarioState.user1.board!.id,
+      testDataName(listName, 'User2List'),
+    );
+    expect(response.status()).toBe(200);
+    const createdList = await user2.listClient.getList(
+      await response.json().then((data) => data.id),
+    );
+    const listData = await createdList.json();
+    expect(listData.name).toContain(listName);
+  },
+);

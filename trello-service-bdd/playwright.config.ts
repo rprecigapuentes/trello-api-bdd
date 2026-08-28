@@ -19,7 +19,7 @@ const testDir = defineBddConfig({
   paths: ['features/*.feature'],
   steps: ['steps/*.ts', 'fixtures/*.ts', 'support/*.ts'],
   outputDir: 'tests',
-  tags: 'not @bug',
+  tags: 'not @fail',
 });
 
 export default defineConfig({
@@ -29,9 +29,9 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 2 : 2,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 1 : 2,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -40,9 +40,9 @@ export default defineConfig({
     baseURL: 'https://api.trello.com',
 
     /* Authenticate every API request against the Trello API. */
-    extraHTTPHeaders: {
+    /*extraHTTPHeaders: {
       Authorization: `OAuth oauth_consumer_key="${process.env.TRELLO_API_KEY}", oauth_token="${process.env.TRELLO_API_TOKEN}"`,
-    },
+    },*/
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',

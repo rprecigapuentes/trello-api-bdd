@@ -1,36 +1,32 @@
-import { APIRequestContext, APIResponse } from '@playwright/test';
+import { APIResponse } from '@playwright/test';
+import { BaseClient } from './BaseClient';
 
-export class MemberClient {
-  private readonly request: APIRequestContext;
-
-  constructor(request: APIRequestContext) {
-    this.request = request;
-  }
-
+export class MemberClient extends BaseClient {
   async getMyMember(): Promise<APIResponse> {
-    const response: APIResponse = await this.request.get('/1/members/me');
+    const response: APIResponse = await this.get('/1/members/me');
     return response;
   }
 
   async getMember(memberId: string): Promise<APIResponse> {
-    const response: APIResponse = await this.request.get(`/1/members/${memberId}`);
+    const response: APIResponse = await this.get(`/1/members/${memberId}`);
     return response;
   }
 
   async getMemberField(memberId: string, field: string): Promise<APIResponse> {
-    const response: APIResponse = await this.request.get(`/1/members/${memberId}/${field}`);
+    const response: APIResponse = await this.get(`/1/members/${memberId}/${field}`);
     return response;
   }
 
   async createBoardStar(memberId: string, boardId: string, position: string): Promise<APIResponse> {
-    const response: APIResponse = await this.request.post(`/1/members/${memberId}/boardStars`, {
-      params: { idBoard: boardId, pos: position },
+    const response: APIResponse = await this.post(`/1/members/${memberId}/boardStars`, {
+      idBoard: boardId,
+      pos: position,
     });
     return response;
   }
 
   async getBoardStar(memberId: string, boardStarId: string): Promise<APIResponse> {
-    const response: APIResponse = await this.request.get(
+    const response: APIResponse = await this.get(
       `/1/members/${memberId}/boardStars/${boardStarId}`,
     );
     return response;
@@ -41,19 +37,24 @@ export class MemberClient {
     boardStarId: string,
     newPosition: string,
   ): Promise<APIResponse> {
-    const response: APIResponse = await this.request.put(
+    const response: APIResponse = await this.put(
       `/1/members/${memberId}/boardStars/${boardStarId}`,
-      {
-        params: { pos: newPosition },
-      },
+      { pos: newPosition },
     );
     return response;
   }
 
   async deleteBoardStar(memberId: string, boardStarId: string): Promise<APIResponse> {
-    const response: APIResponse = await this.request.delete(
+    const response: APIResponse = await this.delete(
       `/1/members/${memberId}/boardStars/${boardStarId}`,
     );
+    return response;
+  }
+
+  async addMemberToBoard(boardId: string, memberId: string, type: string): Promise<APIResponse> {
+    const response: APIResponse = await this.put(`/1/boards/${boardId}/members/${memberId}`, {
+      type: type,
+    });
     return response;
   }
 }

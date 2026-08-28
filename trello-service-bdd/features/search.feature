@@ -2,7 +2,7 @@ Feature: Trello Search
 
     @SCRUM-T37 
     @cleanup-board
-    @bug
+    @fail
     @cleanup-organization
     Scenario: Get search results for a valid query
         Given a member with a valid ID exists
@@ -34,3 +34,12 @@ Feature: Trello Search
         Then the response status code is "200"
         And the response contains only the users that match the member's username in the "members" array
         #And the response contains only "SCRUM-T37" "displayName" in the "organizations" array
+
+    @SCRUM-T76 @cleanup-board
+    Scenario: Invited user can find and create a list a board shared by another user
+        Given 2 valid members exist
+        And user 1 has created a new board named "test-name"
+        When user 1 invites user 2 to the board
+        And user 2 searches for the board
+        Then user 2 can find the shared board
+        And user 2 can create a list in the shared board named "user2-test-list"

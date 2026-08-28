@@ -57,12 +57,12 @@ Then('I clean up by deleting the board', async ({ boardClient, scenarioState }) 
 //This includes 2 steps that are written differently, but they made the same
 Given(
   /^the member has (?:a|at least one) board named "([^"]+)"$/,
-  async ({ scenarioState, boardClient }, boardName: string) => {
-    boardName = testDataName(boardName, 'Board');
+  async ({ scenarioState, boardClient }, boardNameParam: string) => {
+    const boardName = testDataName(boardNameParam, 'Board');
     const response = await boardClient.createBoard(boardName);
     const board = await response.json();
-    expect(board.id).toBeTruthy();
     scenarioState.board = board;
+    expect(board.id).toBeTruthy();
   },
 );
 
@@ -73,4 +73,36 @@ Given('the member has no boards', async ({ boardClient, memberClient }) => {
     await boardClient.deleteBoard(boardId);
   }
   logger.info(`List of boards for member ID ${member.id}: ${member.idBoards.join(', ')}`);
+});
+
+When(
+  String.raw`the user sends a DELETE request to \/boards\/\{boardId\}`,
+  async ({ boardClient, scenarioState }) => {
+    const response = await boardClient.deleteBoard(scenarioState.board!.id);
+    expect(response.status()).toBe(200);
+    logger.debug(`DELETE /1/boards/${scenarioState.board!.id} - Status ${response.status()}`);
+  },
+);
+
+Given(
+  'user 1 has created a new board named {string}',
+  async ({ user1, scenarioState }, boardName: string) => {
+    const response = await user1.boardClient.createBoard(boardName);
+    const board = await response.json();
+    scenarioState.user1.board = board;
+    scenarioState.board = board; // Store the created board in the scenario state for later use
+    expect(board.id).toBeTruthy();
+    logger.info(
+      `User 1 created a new board with ID: ${scenarioState.user1.board?.id} and name: ${boardName}`,
+    );
+  },
+);
+
+When('user 1 invites user 2 to the board', async ({ user1, scenarioState }) => {
+  const response = await user1.memberClient.addMemberToBoard(
+    scenarioState.user1.board!.id,
+    scenarioState.user2.member!.id,
+    'admin',
+  );
+  expect(response.status()).toBe(200);
 });

@@ -57,7 +57,7 @@ After(
 
 After({ tags: '@cleanup-organization' }, async ({ scenarioState, organizationClient }) => {
   for (const orgId of [...scenarioState.createdOrganizationIds].reverse()) {
-    const response = await organizationClient.delete(orgId);
+    const response = await organizationClient.deleteOrganization(orgId);
     if (!response.ok()) {
       logger.error(`Failed to delete organization with ID: ${orgId}. Status: ${response.status()}`);
     } else {
