@@ -2,9 +2,10 @@ import { CardClient } from '../api/clients/CardClient';
 import { BoardClient } from '../api/clients/BoardClient';
 import { ListClient } from '../api/clients/ListClient';
 import { MemberClient } from '../api/clients/MemberClient';
-import { BackgroundApiClient } from '../api/clients/BackgroundClient';
 import { SearchClient } from '../api/clients/SearchClient';
 import { OrganizationClient } from '../api/clients/OrganizationClient';
+import { BackgroundClient } from '../api/clients/BackgroundClient';
+import { CustomBackgroundClient } from '../api/clients/CustomBackgroundClient';
 import {
   TrelloBoardSchema,
   TrelloListSchema,
@@ -47,8 +48,9 @@ type MyFixtures = {
   organizationClient: OrganizationClient;
   scenarioState: ScenarioState;
   memberClient: MemberClient;
-  backgroundApi: BackgroundApiClient;
   searchClient: SearchClient;
+  backgroundClient: BackgroundClient;
+  customBackgroundClient: CustomBackgroundClient;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -84,12 +86,20 @@ export const test = base.extend<MyFixtures>({
     const client = new MemberClient(request);
     await use(client);
   },
-  backgroundApi: async ({ request }, use) => {
+  backgroundClient: async ({ request }, use) => {
     logger.info('Initializing Background API Client fixture...');
     if (!process.env.TRELLO_API_KEY || !process.env.TRELLO_API_TOKEN) {
       throw new Error('Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.');
     }
-    const client = new BackgroundApiClient(request, 'trello-service-bdd');
+    const client = new BackgroundClient(request, 'trello-service-bdd');
+    await use(client);
+  },
+  customBackgroundClient: async ({ request }, use) => {
+    logger.info('Initializing Custom Background API Client fixture...');
+    if (!process.env.TRELLO_API_KEY || !process.env.TRELLO_API_TOKEN) {
+      throw new Error('Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.');
+    }
+    const client = new CustomBackgroundClient(request, 'trello-service-bdd');
     await use(client);
   },
   searchClient: async ({ request }, use) => {

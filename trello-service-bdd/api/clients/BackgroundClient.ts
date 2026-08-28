@@ -1,7 +1,7 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
 import { logger, readTestAsset } from '@core';
 
-export class BackgroundApiClient {
+export class BackgroundClient {
   constructor(
     private request: APIRequestContext,
     private workspace: string,
