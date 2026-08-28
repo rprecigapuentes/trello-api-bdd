@@ -4,6 +4,7 @@ import { ListClient } from '../api/clients/ListClient';
 import { MemberClient } from '../api/clients/MemberClient';
 import { SearchClient } from '../api/clients/SearchClient';
 import { OrganizationClient } from '../api/clients/OrganizationClient';
+import { NotificationClient } from '../api/clients/NotificationClient';
 import { BackgroundClient } from '../api/clients/BackgroundClient';
 import { CustomBackgroundClient } from '../api/clients/CustomBackgroundClient';
 import {
@@ -14,7 +15,7 @@ import {
   TrelloBoardStarSchema,
 } from '../api/schemas/trelloSchemas';
 import { TrelloBoardBackground } from '../api/schemas/backgroundSchemas';
-import type { APIResponse } from '@playwright/test';
+import type { APIResponse, APIRequestContext } from '@playwright/test';
 import { OrganizationSchema } from '../api/schemas/organizationSchemas';
 import { test as base } from 'playwright-bdd';
 import dotenv from 'dotenv';
@@ -49,6 +50,7 @@ type MyFixtures = {
   scenarioState: ScenarioState;
   memberClient: MemberClient;
   searchClient: SearchClient;
+  notificationClient: NotificationClient;
   backgroundClient: BackgroundClient;
   customBackgroundClient: CustomBackgroundClient;
 };
@@ -116,6 +118,14 @@ export const test = base.extend<MyFixtures>({
       throw new Error('Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.');
     }
     const client = new OrganizationClient(request, 'trello-service-bdd');
+    await use(client);
+  },
+  notificationClient: async ({ request }: { request: APIRequestContext }, use) => {
+    logger.info('Initializing Notification Client fixture...');
+    if (!process.env.TRELLO_API_KEY || !process.env.TRELLO_API_TOKEN) {
+      throw new Error('Missing TRELLO_API_KEY or TRELLO_API_TOKEN in environment variables.');
+    }
+    const client = new NotificationClient(request);
     await use(client);
   },
   scenarioState: async ({}, use) => {
