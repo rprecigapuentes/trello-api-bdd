@@ -57,12 +57,12 @@ Then('I clean up by deleting the board', async ({ boardClient, scenarioState }) 
 //This includes 2 steps that are written differently, but they made the same
 Given(
   /^the member has (?:a|at least one) board named "([^"]+)"$/,
-  async ({ scenarioState, boardClient }, boardName: string) => {
-    boardName = testDataName(boardName, 'Board');
+  async ({ scenarioState, boardClient }, boardNameParam: string) => {
+    const boardName = testDataName(boardNameParam, 'Board');
     const response = await boardClient.createBoard(boardName);
     const board = await response.json();
-    expect(board.id).toBeTruthy();
     scenarioState.board = board;
+    expect(board.id).toBeTruthy();
   },
 );
 
