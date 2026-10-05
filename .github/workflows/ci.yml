@@ -1,0 +1,46 @@
+# GitHub Actions version of .gitlab-ci.yml. The quality gates run on every push; the suite calls the
+# live Trello API, so it runs only on demand and needs TRELLO_API_KEY and TRELLO_API_TOKEN as secrets.
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  quality:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck -w trello-service-bdd
+      - run: npm run format:check
+
+  api:
+    if: github.event_name == 'workflow_dispatch'
+    needs: quality
+    runs-on: ubuntu-24.04
+    env:
+      TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
+      TRELLO_API_TOKEN: ${{ secrets.TRELLO_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run test -w trello-service-bdd
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: trello-api-report
+          path: |
+            trello-service-bdd/playwright-report/
+            trello-service-bdd/logs/
+          retention-days: 14

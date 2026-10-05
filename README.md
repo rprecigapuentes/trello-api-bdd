@@ -1,6 +1,10 @@
-# Playwright BDD
+# Trello API BDD
 
-API test automation project using Playwright, TypeScript, and `playwright-bdd`, organized as an **npm workspaces monorepo**. The active suite lives in the `trello-service-bdd` workspace.
+[![CI](https://github.com/rprecigapuentes/trello-api-bdd/actions/workflows/ci.yml/badge.svg)](https://github.com/rprecigapuentes/trello-api-bdd/actions/workflows/ci.yml)
+
+BDD test suite for the [Trello REST API](https://developer.atlassian.com/cloud/trello/rest/) using Playwright, TypeScript, `playwright-bdd` and Zod schema validation, organized as an **npm workspaces monorepo**. The active suite lives in the `trello-service-bdd` workspace.
+
+Team project of the API Testing module, Jalasoft Software Automation Testing Bootcamp (2026). See [Results and contributions](#results-and-contributions).
 
 ---
 
@@ -132,3 +136,17 @@ Husky automatically runs lint-staged prior to every Git commit to ensure staged 
 ## Project Structure
 
 See the project wiki for the full directory layout and workspace breakdown.
+
+---
+
+## Results and contributions
+
+At the last run before the final demo to an external panel, the suite held **61 automated cases: 57 passed, 3 failed and 1 blocked**. The 3 failures are real Trello defects, reported as such.
+
+Built by a team of four. My part (Rosemberth Preciga, [@rprecigapuentes](https://github.com/rprecigapuentes)):
+
+- The Organizations and Labels resources: 31 operations triaged, 19 in scope, and 20 test cases.
+- Response contract validation with Zod schemas.
+- The GitLab CI pipeline and the self-hosted GitLab Runner it ran on, with resource limits.
+
+The original pipeline is `.gitlab-ci.yml`; `.github/workflows/ci.yml` runs the same quality gates on GitHub and the live suite on demand.
